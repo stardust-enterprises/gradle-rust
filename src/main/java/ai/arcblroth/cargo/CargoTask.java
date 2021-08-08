@@ -97,8 +97,12 @@ public class CargoTask extends DefaultTask {
         }
     }
 
+    /**
+     * Builds the specified crate using Cargo.
+     * @throws org.gradle.process.internal.ExecException If Cargo execution fails.
+     */
     @TaskAction
-    void build() {
+    public void build() {
         Project project = getProject();
         project.exec(spec -> {
             spec.commandLine(this.cargoCommand);
@@ -108,14 +112,19 @@ public class CargoTask extends DefaultTask {
         }).assertNormalExitValue();
     }
 
+    /**
+     * @return The working directory of this task.
+     */
     @InputDirectory
-    File getWorkingDir() {
+    public File getWorkingDir() {
         return this.workingDir;
     }
 
+    /**
+     * @return The output artifacts of this task.
+     */
     @OutputFiles
-    @SuppressWarnings("unused")
-    List<File> getOutputFiles() {
+    public List<File> getOutputFiles() {
         return this.outputFiles;
     }
 }
