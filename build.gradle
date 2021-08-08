@@ -1,0 +1,79 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+    id 'com.gradle.plugin-publish' version '0.15.0'
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+group = 'ai.arcblroth'
+archivesBaseName = 'cargo-wrapper'
+
+dependencies {
+    compileOnly gradleApi()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8'
+
+    if (JavaVersion.current().isJava9Compatible()) {
+        it.options.release = 8
+    }
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+pluginBundle {
+    website = "https://$pluginUrlBase"
+    vcsUrl = "https://${pluginUrlBase}.git"
+    tags = ['rust', 'cargo', 'native']
+}
+
+gradlePlugin {
+    plugins {
+        cargoWrapper {
+            id = 'ai.arcblroth.cargo-wrapper'
+            implementationClass = 'ai.arcblroth.cargo.CargoWrapperPlugin'
+            displayName = pluginDisplayName
+            description = pluginDescription
+        }
+    }
+    automatedPublishing = false
+}
+
+publishing {
+    publications {
+        pluginMaven(MavenPublication) {
+            artifactId = archivesBaseName
+            from components.java
+
+            pom {
+                name = pluginDisplayName
+                description = pluginDescription
+                url = "https://$pluginUrlBase"
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'arcblroth'
+                        name = "Arc'blroth"
+                    }
+                }
+                scm {
+                    def scmRepo = "scm:git:git://${pluginUrlBase}.git"
+                    connection = scmRepo
+                    developerConnection = scmRepo
+                    url = scmRepo
+                }
+            }
+        }
+    }
+}
