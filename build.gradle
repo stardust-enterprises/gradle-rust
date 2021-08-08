@@ -27,6 +27,10 @@ java {
     withSourcesJar()
 }
 
+jar {
+    from 'LICENSE'
+}
+
 pluginBundle {
     website = "https://$pluginUrlBase"
     vcsUrl = "https://${pluginUrlBase}.git"
@@ -42,36 +46,34 @@ gradlePlugin {
             description = pluginDescription
         }
     }
-    automatedPublishing = false
 }
 
-publishing {
-    publications {
-        pluginMaven(MavenPublication) {
-            artifactId = archivesBaseName
-            from components.java
-
-            pom {
-                name = pluginDisplayName
-                description = pluginDescription
-                url = "https://$pluginUrlBase"
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+afterEvaluate {
+    publishing {
+        publications {
+            forEach {
+                if(it instanceof MavenPublication) {
+                    it.pom {
+                        url = "https://$pluginUrlBase"
+                        licenses {
+                            license {
+                                name = 'The Apache License, Version 2.0'
+                                url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            }
+                        }
+                        developers {
+                            developer {
+                                id = 'arcblroth'
+                                name = "Arc'blroth"
+                            }
+                        }
+                        scm {
+                            def scmRepo = "scm:git:git://${pluginUrlBase}.git"
+                            connection = scmRepo
+                            developerConnection = scmRepo
+                            url = scmRepo
+                        }
                     }
-                }
-                developers {
-                    developer {
-                        id = 'arcblroth'
-                        name = "Arc'blroth"
-                    }
-                }
-                scm {
-                    def scmRepo = "scm:git:git://${pluginUrlBase}.git"
-                    connection = scmRepo
-                    developerConnection = scmRepo
-                    url = scmRepo
                 }
             }
         }
