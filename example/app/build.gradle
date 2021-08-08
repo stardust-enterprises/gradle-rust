@@ -1,0 +1,30 @@
+plugins {
+    id 'application'
+}
+
+mainClassName = 'ai.arcblroth.cargo.example.Main'
+
+configurations {
+    // Declare a custom configuration to
+    // resolve the library from :native
+    backend {
+        canBeConsumed false
+        canBeResolved true
+    }
+}
+
+dependencies {
+    // Depend on our native code
+    backend(project(':native'))
+}
+
+processResources {
+    // Copy the native library into the final jar
+    from(configurations.backend)
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
