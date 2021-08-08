@@ -7,7 +7,7 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-group = 'ai.arcblroth'
+group = 'io.github.arc-blroth'
 archivesBaseName = 'cargo-wrapper'
 
 dependencies {
@@ -36,7 +36,7 @@ pluginBundle {
 gradlePlugin {
     plugins {
         cargoWrapper {
-            id = 'ai.arcblroth.cargo-wrapper'
+            id = 'io.github.arc-blroth.cargo-wrapper'
             implementationClass = 'ai.arcblroth.cargo.CargoWrapperPlugin'
             displayName = pluginDisplayName
             description = pluginDescription
