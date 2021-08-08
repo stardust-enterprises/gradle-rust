@@ -16,6 +16,7 @@ package ai.arcblroth.cargo;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.tasks.TaskProvider;
 
 /**
  * A plugin that wraps Rust's Cargo build system,
@@ -27,8 +28,10 @@ public class CargoWrapperPlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.getConfigurations().create("default");
         CargoExtension extension = project.getExtensions().create("cargo", CargoExtension.class);
-        CargoTask buildTask = project.getTasks().register("build", CargoTask.class).get();
-        project.getArtifacts().add("default", buildTask);
-        project.afterEvaluate(project2 -> buildTask.configure(extension));
+        TaskProvider<CargoTask> buildTask = project.getTasks().register("build", CargoTask.class);
+        project.afterEvaluate(project2 -> {
+            buildTask.get().configure(extension);
+            project2.getArtifacts().add("default", buildTask);
+        });
     }
 }
