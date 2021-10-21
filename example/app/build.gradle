@@ -15,7 +15,7 @@ configurations {
 
 dependencies {
     // Depend on our native code
-    backend(project(':native'))
+    // backend(project(':native'))
 }
 
 processResources {

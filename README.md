@@ -1,7 +1,7 @@
-# Gradle Cargo Wrapper
+# Gradle Cross Wrapper
 
 A [Gradle](https://www.gradle.org) plugin that wraps Rust's
-[Cargo](https://doc.rust-lang.org/cargo/) build system,
+[Cross](https://github.com/rust-embedded/cross) build system,
 for embedding Rust libraries in Java projects.
 
 This plugin has been tested with Gradle 7.0.0, and should
@@ -10,6 +10,9 @@ work with at least 7.x versions of Gradle.
 If you're looking to use Rust with Android, you might want Mozilla's
 [rust-android-gradle](https://github.com/mozilla/rust-android-gradle)
 plugin.
+
+If you're looking to wrap Rust's [Cargo](https://doc.rust-lang.org/cargo/),
+make sure to check out the original [Gradle Cargo Wrapper](https://github.com/Arc-blroth/gradle-cargo-wrapper).
 
 ## Quickstart
 
@@ -20,15 +23,15 @@ To use the plugin, first apply it in a subproject:
 // in example/native/build.gradle
 
 plugins {
-    id "io.github.arc-blroth.cargo-wrapper" version "1.0.0"
+    id "io.github.stardust-enterprises.cross-wrapper" version "1.0.0"
 }
 ```
 
 Then specify the location of your Rust crate and the filename
-of your built library using the `cargo` extension:
+of your built library using the `cross` extension:
 
 ```groovy
-cargo {
+cross {
     // This defaults to the current project path if not specified.
     crate = projectDir.path
     outputs = ['': System.mapLibraryName('wrapper_example')]
@@ -109,11 +112,8 @@ Cargo.
 
 ## License
 
-Most of the code in this repository has been extracted and modified
-from code written by me (Arc-blroth) at
-[Arc-blroth/BosstroveRevenge](https://github.com/Arc-blroth/BosstroveRevenge).
-I hereby relicense this code under the
-[Apache 2.0 License](LICENSE).
+The original [Gradle Cargo Wrapper](https://github.com/Arc-blroth/gradle-cargo-wrapper), 
+and this project, are licensed under the [Apache 2.0 License](LICENSE).
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,

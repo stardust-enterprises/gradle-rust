@@ -12,26 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ai.arcblroth.cargo;
+package fr.stardust.rust.cross;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskProvider;
 
 /**
- * A plugin that wraps Rust's Cargo build system,
+ * A plugin that wraps Rust's Cross build system,
  * for embedding Rust libraries in Java projects.
  */
 @SuppressWarnings("unused")
-public class CargoWrapperPlugin implements Plugin<Project> {
+public class CrossWrapperPlugin implements Plugin<Project> {
     @Override
-    public void apply(Project project) {
+    public void apply(final Project project) {
         project.getConfigurations().create("default");
-        CargoExtension extension = project.getExtensions().create("cargo", CargoExtension.class);
-        TaskProvider<CargoTask> buildTask = project.getTasks().register("build", CargoTask.class);
-        project.afterEvaluate(project2 -> {
+
+        CrossExtension extension = project.getExtensions().create("cross", CrossExtension.class);
+
+        TaskProvider<CrossTask> buildTask = project.getTasks().register("build", CrossTask.class);
+        project.afterEvaluate(__ -> {
             buildTask.get().configure(extension);
-            project2.getArtifacts().add("default", buildTask);
+            project.getArtifacts().add("default", buildTask);
         });
     }
 }

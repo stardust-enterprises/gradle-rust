@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ai.arcblroth.cargo;
+package fr.stardust.rust.cross;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +20,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Configuration options for the Cargo wrapper plugin.
+ * Configuration options for the Cross wrapper plugin.
  */
-public class CargoExtension {
+public class CrossExtension {
+
     /**
-     * Location of the <code>cargo</code> executable.
-     * By default, the plugin will use the Cargo
+     * Location of the <code>cross</code> executable.
+     * By default, the plugin will use the Cross
      * executable located on the path.
      */
-    public String cargoCommand = "cargo";
+    public String cargoCommand = "cross";
 
     /**
      * The rust toolchain to use.
@@ -56,18 +57,18 @@ public class CargoExtension {
     /**
      * Build profile to use. If this is not set to <code>"debug"</code>,
      * the plugin assumes a release profile.
-     * By default, this is set to the <code>"debug"</code> release profile.
+     * By default, this is set to the <code>"release"</code> release profile.
      */
-    public String profile = "debug";
+    public String profile = "release";
 
     /**
-     * Additional arguments to pass to Cargo.
+     * Additional arguments to pass to Cross.
      */
     public List<String> arguments = new ArrayList<>();
 
     /**
      * Additional environmental variables to set while
-     * launching Cargo.
+     * launching Cross.
      */
     public Map<String, String> environment = new ConcurrentHashMap<>();
 }

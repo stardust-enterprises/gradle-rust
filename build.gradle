@@ -7,8 +7,8 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-group = 'io.github.arc-blroth'
-archivesBaseName = 'cargo-wrapper'
+group = 'fr.stardust.rust'
+archivesBaseName = 'cross-wrapper'
 
 dependencies {
     compileOnly gradleApi()
@@ -34,14 +34,14 @@ jar {
 pluginBundle {
     website = "https://$pluginUrlBase"
     vcsUrl = "https://${pluginUrlBase}.git"
-    tags = ['rust', 'cargo', 'native']
+    tags = ['rust', 'cargo', 'cross', 'native']
 }
 
 gradlePlugin {
     plugins {
-        cargoWrapper {
-            id = 'io.github.arc-blroth.cargo-wrapper'
-            implementationClass = 'ai.arcblroth.cargo.CargoWrapperPlugin'
+        crossWrapper {
+            id = 'io.github.stardust-enterprises.cross-wrapper'
+            implementationClass = 'fr.stardust.rust.cross.CrossWrapperPlugin'
             displayName = pluginDisplayName
             description = pluginDescription
         }
@@ -58,13 +58,17 @@ afterEvaluate {
                         licenses {
                             license {
                                 name = 'The Apache License, Version 2.0'
-                                url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                                url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
                             }
                         }
                         developers {
                             developer {
                                 id = 'arcblroth'
                                 name = "Arc'blroth"
+                            }
+                            developer {
+                                id = 'xtrm'
+                                name = "xtrm"
                             }
                         }
                         scm {
