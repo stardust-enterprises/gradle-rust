@@ -1,5 +1,5 @@
 plugins {
-    id 'io.github.stardust-enterprises.cross-wrapper' version '1.0.0'
+    id 'io.github.stardustenterprises.cross' version '0.2.0'
 }
 
 cross {
