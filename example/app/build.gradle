@@ -4,6 +4,18 @@ plugins {
 
 mainClassName = 'ai.arcblroth.cargo.example.Main'
 
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8'
+
+    if (JavaVersion.current().isJava9Compatible()) {
+        it.options.release = 8
+    }
+}
+
+
 configurations {
     // Declare a custom configuration to
     // resolve the library from :native

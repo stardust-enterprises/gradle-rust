@@ -40,8 +40,8 @@ pluginBundle {
 gradlePlugin {
     plugins {
         crossWrapper {
-            id = 'io.github.stardust-enterprises.cross-wrapper'
-            implementationClass = 'fr.stardust.rust.cross.CrossWrapperPlugin'
+            id = 'io.github.stardustenterprises.cross'
+            implementationClass = 'io.github.stardustenterprises.cross.CrossWrapperPlugin'
             displayName = pluginDisplayName
             description = pluginDescription
         }

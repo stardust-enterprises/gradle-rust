@@ -3,19 +3,12 @@ plugins {
 }
 
 cross {
-    // Figure out what extension the built library will have.
-    // The plugin does not do this automatically, because
-    // it is possible that one might be cross-compiling, in
-    // which case the operating system cannot reliably be
-    // used to figure out the extension.
-    //
-    // This code assumes that the library will not be
-    // cross-compiled, and that the default toolchain
-    // according to rustup compiles for the host target.
     outputs = [
-            'x86_64-unknown-linux-gnu': 'libexample.so',
-            'x86_64-pc-windows-gnu': 'example.dll'
+//            'x86_64-apple-darwin': 'libwrapper_example.dylib',
+            'x86_64-unknown-linux-gnu': 'libwrapper_example.so',
+            'x86_64-pc-windows-gnu': 'wrapper_example.dll',
+            'arm-linux-androideabi': 'libwrapper_example-android.so'
     ]
 
-    // arm-linux-androideabi
+    profile = "release"
 }
