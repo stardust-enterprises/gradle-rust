@@ -1,10 +1,11 @@
 plugins {
-    id 'io.github.stardustenterprises.cross' version '0.2.0'
+    id 'io.github.nkosmos.cross' version '0.2.0'
 }
 
 cross {
+    
+
     outputs = [
-//            'x86_64-apple-darwin': 'libwrapper_example.dylib',
             'x86_64-unknown-linux-gnu': 'libwrapper_example.so',
             'x86_64-pc-windows-gnu': 'wrapper_example.dll',
             'arm-linux-androideabi': 'libwrapper_example-android.so'

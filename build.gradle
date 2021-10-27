@@ -7,7 +7,7 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-group = 'fr.stardust.rust'
+group = 'io.github.nkosmos'
 archivesBaseName = 'cross-wrapper'
 
 dependencies {
@@ -40,8 +40,8 @@ pluginBundle {
 gradlePlugin {
     plugins {
         crossWrapper {
-            id = 'io.github.stardustenterprises.cross'
-            implementationClass = 'io.github.stardustenterprises.cross.CrossWrapperPlugin'
+            id = 'io.github.nkosmos.cross'
+            implementationClass = 'io.github.nkosmos.cross.CrossWrapperPlugin'
             displayName = pluginDisplayName
             description = pluginDescription
         }

@@ -23,7 +23,7 @@ To use the plugin, first apply it in a subproject:
 // in example/native/build.gradle
 
 plugins {
-    id "io.github.stardust-enterprises.cross-wrapper" version "1.0.0"
+    id "io.github.nkosmos.cross" version "1.0.0"
 }
 ```
 
@@ -45,6 +45,10 @@ other subprojects:
 ```groovy
 // in example/app/build.gradle
 
+// This doesn't work properly yet since this plugin supports
+// multiple output files. Will try to figure out a workaround.
+
+/*
 configurations {
     // Declare a custom configuration to
     // resolve the library from :native
@@ -63,15 +67,16 @@ processResources {
     // Copy the native library into the final jar
     from(configurations.backend)
 }
+*/
 ```
 
 ## Configuration Options
 
-The `cargo` extension accepts these options:
+The `cross` extension accepts these options:
 
-### `cargoCommand`
+### `crossCommand`
 
-Location of the `cargo` executable. Defaults to the Cargo
+Location of the `cross` executable. Defaults to the Cross
 executable located on the path.
 
 ### `toolchain`
@@ -99,7 +104,7 @@ the same project.
 
 The Rust [profile](https://doc.rust-lang.org/cargo/reference/profiles.html)
 to use, as passed on the command line to Cargo. Can be either
-`"debug"` or `"release"`. Defaults to `"debug"`.
+`"debug"` or `"release"`. Defaults to `"release"`.
 
 ### `arguments`
 

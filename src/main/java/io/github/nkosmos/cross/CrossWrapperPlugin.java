@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package io.github.stardustenterprises.cross;
+package io.github.nkosmos.cross;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;

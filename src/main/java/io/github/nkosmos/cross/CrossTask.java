@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package io.github.stardustenterprises.cross;
+package io.github.nkosmos.cross;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
@@ -32,9 +32,10 @@ import java.util.stream.Collectors;
 /**
  * The main Cross wrapper task.
  */
+@SuppressWarnings("CommentedOutCode")
 public class CrossTask extends DefaultTask {
 
-    private String cargoCommand;
+    private String crossCommand;
     private List<String> args;
     private Map<String, String> environment;
 
@@ -65,10 +66,10 @@ public class CrossTask extends DefaultTask {
     protected void configure(CrossExtension config) {
         Project project = getProject();
 
-        if (config.cargoCommand != null && config.cargoCommand.isEmpty()) {
+        if (config.crossCommand != null && config.crossCommand.isEmpty()) {
             throw new GradleException("Cross command cannot be empty");
         }
-        this.cargoCommand = config.cargoCommand == null ? "cross" : config.cargoCommand;
+        this.crossCommand = config.crossCommand == null ? "cross" : config.crossCommand;
 
         this.args = new ArrayList<>();
 
@@ -131,9 +132,18 @@ public class CrossTask extends DefaultTask {
 
         if (this.targets == null || this.targets.isEmpty()) {
             project.exec(spec -> {
-                System.out.println("Building for default target...");
+                System.out.print("Building for default target...");
 
-                spec.commandLine(this.cargoCommand);
+                // notify the user *once* that, if all they're going to
+                // do is build for their default target, using Cross
+                // might not be the best idea.
+                File targetDir = new File(this.workingDir, "target");
+                if (!targetDir.exists()) {
+                    System.out.print(" (do you really need cross?)");
+                }
+                System.out.println();
+
+                spec.commandLine(this.crossCommand);
                 spec.args(args);
                 spec.workingDir(workingDir);
                 spec.environment(environment);
@@ -147,7 +157,7 @@ public class CrossTask extends DefaultTask {
                 targetArgs.add(target);
 
                 project.exec(spec -> {
-                    spec.commandLine(this.cargoCommand);
+                    spec.commandLine(this.crossCommand);
                     spec.args(targetArgs);
                     spec.workingDir(workingDir);
                     spec.environment(environment);
@@ -166,13 +176,8 @@ public class CrossTask extends DefaultTask {
 
     //TODO: gradle artifacts work again
     // or another system
-    /**
-     * @return The output artifacts of this task.
-     */
-    /*
-    @OutputFiles
+    /*@OutputFiles
     public List<File> getOutputFiles() {
         return this.outputFiles.subList(0, 0);
-    }
-    */
+    }*/
 }

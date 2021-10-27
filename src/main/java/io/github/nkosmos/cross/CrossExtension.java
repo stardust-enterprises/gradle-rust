@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package io.github.stardustenterprises.cross;
+package io.github.nkosmos.cross;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class CrossExtension {
      * By default, the plugin will use the Cross
      * executable located on the path.
      */
-    public String cargoCommand = "cross";
+    public String crossCommand = "cross";
 
     /**
      * The rust toolchain to use.
