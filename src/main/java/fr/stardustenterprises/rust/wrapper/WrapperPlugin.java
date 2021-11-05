@@ -12,28 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package io.github.nkosmos.cross;
+package fr.stardustenterprises.rust.wrapper;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskProvider;
 
 /**
- * A plugin that wraps Rust's Cross build system,
+ * A plugin that wraps Rust's build systems,
  * for embedding Rust libraries in Java projects.
  */
 @SuppressWarnings("unused")
-public class CrossWrapperPlugin implements Plugin<Project> {
+public class WrapperPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         project.getConfigurations().create("default");
 
-        CrossExtension extension = project.getExtensions().create("cross", CrossExtension.class);
+        WrapperExtension extension = project.getExtensions().create("rust", WrapperExtension.class);
 
-        TaskProvider<CrossTask> buildTask = project.getTasks().register("build", CrossTask.class);
+        TaskProvider<WrapperTask> wrapperTask = project.getTasks().register("build", WrapperTask.class);
         project.afterEvaluate(__ -> {
-            buildTask.get().configure(extension);
-            project.getArtifacts().add("default", buildTask);
+            wrapperTask.get().configure(extension);
+            project.getArtifacts().add("default", wrapperTask);
         });
     }
 }

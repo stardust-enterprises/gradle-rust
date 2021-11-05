@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package io.github.nkosmos.cross;
+package fr.stardustenterprises.rust.wrapper;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
@@ -30,12 +31,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * The main Cross wrapper task.
+ * The main wrapper task.
  */
-@SuppressWarnings("CommentedOutCode")
-public class CrossTask extends DefaultTask {
+public class WrapperTask extends DefaultTask {
 
-    private String crossCommand;
+    private String command;
     private List<String> args;
     private Map<String, String> environment;
 
@@ -57,19 +57,21 @@ public class CrossTask extends DefaultTask {
 
     private List<File> outputFiles;
 
+    private File outputArchive;
+
     /**
      * <b>For internal use only.</b>
      * Configures this task with the given options.
      *
      * @param config Extension object to fetch options from.
      */
-    protected void configure(CrossExtension config) {
+    protected void configure(WrapperExtension config) {
         Project project = getProject();
 
-        if (config.crossCommand != null && config.crossCommand.isEmpty()) {
+        if (config.command != null && config.command.isEmpty()) {
             throw new GradleException("Cross command cannot be empty");
         }
-        this.crossCommand = config.crossCommand == null ? "cross" : config.crossCommand;
+        this.command = config.command == null ? "cargo" : config.command;
 
         this.args = new ArrayList<>();
 
@@ -124,46 +126,14 @@ public class CrossTask extends DefaultTask {
     /**
      * Builds the specified crate using Cross.
      *
-     * @throws org.gradle.process.internal.ExecException If Cross execution fails.
+     * @throws org.gradle.process.internal.ExecException If execution fails.
      */
     @TaskAction
     public void build() {
         Project project = getProject();
 
-        if (this.targets == null || this.targets.isEmpty()) {
-            project.exec(spec -> {
-                System.out.print("Building for default target...");
-
-                // notify the user *once* that, if all they're going to
-                // do is build for their default target, using Cross
-                // might not be the best idea.
-                File targetDir = new File(this.workingDir, "target");
-                if (!targetDir.exists()) {
-                    System.out.print(" (do you really need cross?)");
-                }
-                System.out.println();
-
-                spec.commandLine(this.crossCommand);
-                spec.args(args);
-                spec.workingDir(workingDir);
-                spec.environment(environment);
-            }).assertNormalExitValue();
-        } else {
-            this.targets.forEach(target -> {
-                System.out.println("Building for \"" + target + "\" target...");
-
-                List<String> targetArgs = new ArrayList<>(this.args);
-                targetArgs.add("--target");
-                targetArgs.add(target);
-
-                project.exec(spec -> {
-                    spec.commandLine(this.crossCommand);
-                    spec.args(targetArgs);
-                    spec.workingDir(workingDir);
-                    spec.environment(environment);
-                }).assertNormalExitValue();
-            });
-        }
+        // build targets
+        // compress into archive
     }
 
     /**
@@ -174,10 +144,8 @@ public class CrossTask extends DefaultTask {
         return this.workingDir;
     }
 
-    //TODO: gradle artifacts work again
-    // or another system
-    /*@OutputFiles
-    public List<File> getOutputFiles() {
-        return this.outputFiles.subList(0, 0);
-    }*/
+    @OutputFile
+    public File getOutputFile() {
+        return outputArchive;
+    }
 }

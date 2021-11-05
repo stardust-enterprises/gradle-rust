@@ -1,5 +1,6 @@
 plugins {
     id 'application'
+    id "fr.stardustenterprises.rust.importer" version "2.0.0-SNAPSHOT"
 }
 
 mainClassName = 'ai.arcblroth.cargo.example.Main'
@@ -15,15 +16,14 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
-
-configurations {
-    // Declare a custom configuration to
-    // resolve the library from :native
-    backend {
-        canBeConsumed false
-        canBeResolved true
-    }
-}
+//configurations {
+//    // Declare a custom configuration to
+//    // resolve the library from :native
+//    backend {
+//        canBeConsumed false
+//        canBeResolved true
+//    }
+//}
 
 dependencies {
     // Depend on our native code

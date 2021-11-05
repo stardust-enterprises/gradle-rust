@@ -1,21 +1,21 @@
 plugins {
-    id 'java-gradle-plugin'
-    id 'maven-publish'
-    id 'com.gradle.plugin-publish' version '0.15.0'
+    id("java-gradle-plugin")
+    id("maven-publish")
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-group = 'io.github.nkosmos'
-archivesBaseName = 'cross-wrapper'
+group = "fr.stardustenterprises"
+archivesBaseName = "rust"
+version = "2.0.0-SNAPSHOT"
 
 dependencies {
-    compileOnly gradleApi()
+    compileOnly(gradleApi())
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.encoding = 'UTF-8'
+    it.options.encoding = "UTF-8"
 
     if (JavaVersion.current().isJava9Compatible()) {
         it.options.release = 8
@@ -28,58 +28,22 @@ java {
 }
 
 jar {
-    from 'LICENSE'
-}
-
-pluginBundle {
-    website = "https://$pluginUrlBase"
-    vcsUrl = "https://${pluginUrlBase}.git"
-    tags = ['rust', 'cargo', 'cross', 'native']
+    from "LICENSE"
 }
 
 gradlePlugin {
     plugins {
-        crossWrapper {
-            id = 'io.github.nkosmos.cross'
-            implementationClass = 'io.github.nkosmos.cross.CrossWrapperPlugin'
-            displayName = pluginDisplayName
-            description = pluginDescription
+        wrapper {
+            id = "fr.stardustenterprises.rust.wrapper"
+            implementationClass = "fr.stardustenterprises.rust.wrapper.WrapperPlugin"
+            displayName = "Rust Wrapper"
+            description = "A plugin that wraps Rust's build systems, for embedding Rust libraries in Java projects."
         }
-    }
-}
-
-afterEvaluate {
-    publishing {
-        publications {
-            forEach {
-                if(it instanceof MavenPublication) {
-                    it.pom {
-                        url = "https://$pluginUrlBase"
-                        licenses {
-                            license {
-                                name = 'The Apache License, Version 2.0'
-                                url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
-                            }
-                        }
-                        developers {
-                            developer {
-                                id = 'arcblroth'
-                                name = "Arc'blroth"
-                            }
-                            developer {
-                                id = 'xtrm'
-                                name = "xtrm"
-                            }
-                        }
-                        scm {
-                            def scmRepo = "scm:git:git://${pluginUrlBase}.git"
-                            connection = scmRepo
-                            developerConnection = scmRepo
-                            url = scmRepo
-                        }
-                    }
-                }
-            }
+        importer {
+            id = "fr.stardustenterprises.rust.import"
+            implementationClass = "fr.stardustenterprises.rust.importer.ImporterPlugin"
+            displayName = "Rust Importer"
+            description = "A plugin that makes it possible to import outputs from Cross from another Gradle project."
         }
     }
 }

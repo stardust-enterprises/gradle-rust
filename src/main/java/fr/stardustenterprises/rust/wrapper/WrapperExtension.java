@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package io.github.nkosmos.cross;
+package fr.stardustenterprises.rust.wrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +22,15 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Configuration options for the Cross wrapper plugin.
  */
-public class CrossExtension {
+public class WrapperExtension {
 
     /**
-     * Location of the <code>cross</code> executable.
-     * By default, the plugin will use the Cross
+     * Command used to run Rust's build system.
+     * This usually is <code>cargo</code> or <code>cross</code>.
+     * By default, the plugin will use the <code>cargo</code>
      * executable located on the path.
      */
-    public String crossCommand = "cross";
+    public String command = "cargo";
 
     /**
      * The rust toolchain to use.
@@ -47,10 +48,9 @@ public class CrossExtension {
     public String crate = null;
 
     /**
-     * List of the locations of the outputs executables/libraries.
-     * Each entry in this list is a pair between a target triple
-     * and the name of the output file. Use <code>""</code>
-     * (the empty string) to specify the default target.
+     * Map of the platform to target to the locations of the output executables/libraries.
+     * Each key in this map is a <a href="https://doc.rust-lang.org/nightly/rustc/platform-support.html">target triple</a>.
+     * Use <code>""</code> an empty string to use the default platform.
      */
     public Map<String, String> outputs = new ConcurrentHashMap<>();
 
@@ -62,13 +62,12 @@ public class CrossExtension {
     public String profile = "release";
 
     /**
-     * Additional arguments to pass to Cross.
+     * Additional arguments to pass to the build system.
      */
     public List<String> arguments = new ArrayList<>();
 
     /**
-     * Additional environmental variables to set while
-     * launching Cross.
+     * Additional environmental variables to set while building.
      */
     public Map<String, String> environment = new ConcurrentHashMap<>();
 }

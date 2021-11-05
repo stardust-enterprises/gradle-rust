@@ -1,9 +1,9 @@
 plugins {
-    id 'io.github.nkosmos.cross' version '0.2.0'
+    id 'fr.stardustenterprises.rust.wrapper' version '2.0.0-SNAPSHOT'
 }
 
-cross {
-    
+rust {
+    command = "cross"
 
     outputs = [
             'x86_64-unknown-linux-gnu': 'libwrapper_example.so',

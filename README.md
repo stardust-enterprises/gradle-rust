@@ -1,18 +1,7 @@
-# Gradle Cross Wrapper
+# Gradle Rust 
 
-A [Gradle](https://www.gradle.org) plugin that wraps Rust's
-[Cross](https://github.com/rust-embedded/cross) build system,
-for embedding Rust libraries in Java projects.
-
-This plugin has been tested with Gradle 7.0.0, and should
-work with at least 7.x versions of Gradle.
-
-If you're looking to use Rust with Android, you might want Mozilla's
-[rust-android-gradle](https://github.com/mozilla/rust-android-gradle)
-plugin.
-
-If you're looking to wrap Rust's [Cargo](https://doc.rust-lang.org/cargo/),
-make sure to check out the original [Gradle Cargo Wrapper](https://github.com/Arc-blroth/gradle-cargo-wrapper).
+A [Gradle](https://www.gradle.org) plugin that wraps Rust build systems,
+for embedding Rust libraries in JVM projects.
 
 ## Quickstart
 
@@ -23,7 +12,7 @@ To use the plugin, first apply it in a subproject:
 // in example/native/build.gradle
 
 plugins {
-    id "io.github.nkosmos.cross" version "1.0.0"
+    id "fr.stardustenterprises.rust.wrapper" version "1.0.0"
 }
 ```
 
@@ -31,10 +20,18 @@ Then specify the location of your Rust crate and the filename
 of your built library using the `cross` extension:
 
 ```groovy
-cross {
+rust {
+    // This defaults to the cargo executable on path
+    command = "cargo"
+    
     // This defaults to the current project path if not specified.
     crate = projectDir.path
-    outputs = ['': System.mapLibraryName('wrapper_example')]
+    
+    outputs = [
+            '': System.mapLibraryName('example'),
+            'x86_64-pc-windows-gnu': 'example.dll',
+            'x86_64-unknown-linux-gnu': 'libexample.so'
+    ]
 }
 ```
 
