@@ -43,7 +43,7 @@ gradlePlugin {
             id = "fr.stardustenterprises.rust.import"
             implementationClass = "fr.stardustenterprises.rust.importer.ImporterPlugin"
             displayName = "Rust Importer"
-            description = "A plugin that makes it possible to import outputs from Cross from another Gradle project."
+            description = "A plugin that makes it possible to import multiple outputs from Cross from another Gradle project."
         }
     }
 }
