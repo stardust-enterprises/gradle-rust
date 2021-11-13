@@ -3,6 +3,7 @@ package fr.stardustenterprises.rust.importer;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Project;
 import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.TaskContainer;
@@ -17,11 +18,11 @@ public class ImporterTask extends DefaultTask {
 
     @TaskAction
     public void copy() {
-        TaskContainer tasks = getProject().getTasks();
-        ConfigurationContainer configurations = getProject().getConfigurations();
+        Project project = getProject();
+        ConfigurationContainer configurations = project.getConfigurations();
 
-        Jar task = tasks.withType(Jar.class).named("jar").get();
-        File dest = task.getTemporaryDir();
+        File resourcesDir = new File(project.getBuildDir(), "resources" + File.separator + "main");
+        resourcesDir.mkdirs();
 
         List<File> imports = new ArrayList<>();
         configurations.getByName("rustImport").forEach(imports::add);
@@ -29,7 +30,7 @@ public class ImporterTask extends DefaultTask {
         imports.forEach(file -> {
             ZipFile zipFile = new ZipFile(file);
             try {
-                zipFile.extractAll(dest.getAbsolutePath());
+                zipFile.extractAll(resourcesDir.getAbsolutePath());
             } catch (ZipException e) {
                 throw new RuntimeException(e);
             }

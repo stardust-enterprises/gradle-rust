@@ -9,6 +9,7 @@ import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.UnknownConfigurationException;
 import org.gradle.api.plugins.PluginManager;
 import org.gradle.api.tasks.TaskContainer;
+import org.gradle.jvm.tasks.Jar;
 import org.gradle.language.jvm.tasks.ProcessResources;
 
 import java.io.File;
@@ -18,22 +19,18 @@ public class ImporterPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
+        TaskContainer tasks = project.getTasks();
         ConfigurationContainer configurations = project.getConfigurations();
 
         Configuration configuration = configurations.create("rustImport");
         configuration.setCanBeConsumed(false);
         configuration.setCanBeResolved(true);
 
-        TaskContainer tasks = project.getTasks();
-
-        //noinspection UnstableApiUsage
-//        ProcessResources task = tasks.forEach();
-//        System.out.println(task != null ? task.getDestinationDir() : null);
-        tasks.forEach(System.out::println);
-
-        ImporterTask importerTask = project.getTasks().create("importRustResources", ImporterTask.class);
+        ImporterTask importerTask = tasks.create("importRustResources", ImporterTask.class);
         importerTask.setGroup("rust");
 
-//        task.dependsOn(importerTask);
+        project.afterEvaluate(__ -> {
+            tasks.named("processResources").get().dependsOn(importerTask);
+        });
     }
 }
