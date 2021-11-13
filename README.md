@@ -12,12 +12,12 @@ To use the plugin, first apply it in a subproject:
 // in example/native/build.gradle
 
 plugins {
-    id "fr.stardustenterprises.rust.wrapper" version "1.0.0"
+    id "fr.stardustenterprises.rust.wrapper" version "2.0.0-SNAPSHOT"
 }
 ```
 
 Then specify the location of your Rust crate and the filename
-of your built library using the `cross` extension:
+of your built library using the `rust` extension:
 
 ```groovy
 rust {
@@ -28,7 +28,10 @@ rust {
     crate = projectDir.path
     
     outputs = [
+            // System default
             '': System.mapLibraryName('example'),
+            
+            // 3rd party toolchains, available with cross build system
             'x86_64-pc-windows-gnu': 'example.dll',
             'x86_64-unknown-linux-gnu': 'libexample.so'
     ]
@@ -36,7 +39,7 @@ rust {
 ```
 
 The subproject where this plugin is applied will now publish
-Cargo's outputs as Gradle artifacts, allowing you to use them in
+outputs archived as a single Gradle artifact, allowing you to use them in
 other subprojects:
 
 ```groovy
@@ -69,11 +72,11 @@ processResources {
 
 ## Configuration Options
 
-The `cross` extension accepts these options:
+The `rust` extension accepts these options:
 
-### `crossCommand`
+### `command`
 
-Location of the `cross` executable. Defaults to the Cross
+Location of the build tool executable. Defaults to the `cargo`
 executable located on the path.
 
 ### `toolchain`
@@ -105,16 +108,15 @@ to use, as passed on the command line to Cargo. Can be either
 
 ### `arguments`
 
-A list of additional arguments to pass to the Cargo command line.
+A list of additional arguments to pass to the command line.
 
 ### `environment`
 
-A map of additional environmental variable to set while launching
-Cargo.
+A map of additional environmental variable to set while building.
 
 ## License
 
-The original [Gradle Cargo Wrapper](https://github.com/Arc-blroth/gradle-cargo-wrapper), 
+The original [Gradle Cargo Wrapper](https://github.com/Arc-blroth/gradle-cargo-wrapper) on which this project is based on 
 and this project, are licensed under the [Apache 2.0 License](LICENSE).
 
 Unless required by applicable law or agreed to in writing, software

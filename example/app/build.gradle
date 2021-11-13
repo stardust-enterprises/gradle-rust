@@ -1,5 +1,6 @@
 plugins {
     id 'application'
+    id 'java'
     id "fr.stardustenterprises.rust.importer" version "2.0.0-SNAPSHOT"
 }
 
@@ -28,11 +29,12 @@ tasks.withType(JavaCompile).configureEach {
 dependencies {
     // Depend on our native code
     // backend(project(':native'))
+    rustImport project(":native")
 }
 
 processResources {
     // Copy the native library into the final jar
-    from(configurations.backend)
+    //from(configurations.backend)
 }
 
 jar {

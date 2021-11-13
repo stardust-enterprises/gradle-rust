@@ -1,1 +1,1 @@
-rootProject.name = "rust"
+rootProject.name = "gradle-rust"

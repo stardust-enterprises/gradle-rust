@@ -31,9 +31,11 @@ public class WrapperPlugin implements Plugin<Project> {
         WrapperExtension extension = project.getExtensions().create("rust", WrapperExtension.class);
 
         TaskProvider<WrapperTask> wrapperTask = project.getTasks().register("build", WrapperTask.class);
-        project.afterEvaluate(__ -> {
+        wrapperTask.get().setGroup("build");
+
+        project.afterEvaluate(p -> {
             wrapperTask.get().configure(extension);
-            project.getArtifacts().add("default", wrapperTask);
+            p.getArtifacts().add("default", wrapperTask);
         });
     }
 }

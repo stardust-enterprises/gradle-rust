@@ -10,8 +10,13 @@ group = "fr.stardustenterprises"
 archivesBaseName = "rust"
 version = "2.0.0-SNAPSHOT"
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compileOnly(gradleApi())
+    implementation("net.lingala.zip4j:zip4j:2.9.0")
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -40,10 +45,10 @@ gradlePlugin {
             description = "A plugin that wraps Rust's build systems, for embedding Rust libraries in Java projects."
         }
         importer {
-            id = "fr.stardustenterprises.rust.import"
+            id = "fr.stardustenterprises.rust.importer"
             implementationClass = "fr.stardustenterprises.rust.importer.ImporterPlugin"
             displayName = "Rust Importer"
-            description = "A plugin that makes it possible to import outputs from Cross from another Gradle project."
+            description = "A plugin that makes it possible to import outputs from Rust from another Gradle project."
         }
     }
 }

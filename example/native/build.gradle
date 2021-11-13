@@ -6,9 +6,10 @@ rust {
     command = "cross"
 
     outputs = [
-            'x86_64-unknown-linux-gnu': 'libwrapper_example.so',
-            'x86_64-pc-windows-gnu': 'wrapper_example.dll',
-            'arm-linux-androideabi': 'libwrapper_example-android.so'
+//            'x86_64-unknown-linux-gnu': 'libwrapper_example.so',
+//            'x86_64-pc-windows-gnu': 'wrapper_example.dll',
+            'arm-linux-androideabi': 'libwrapper_example_android.so'
+            //'aarch64-apple-darwin': 'libwrapper_example.dylib'
     ]
 
     profile = "release"
