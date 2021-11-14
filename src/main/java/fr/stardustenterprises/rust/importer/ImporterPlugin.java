@@ -6,6 +6,7 @@ import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.tasks.TaskContainer;
+import org.gradle.language.jvm.tasks.ProcessResources;
 
 @NonNullApi
 public class ImporterPlugin implements Plugin<Project> {
@@ -19,11 +20,14 @@ public class ImporterPlugin implements Plugin<Project> {
         configuration.setCanBeConsumed(false);
         configuration.setCanBeResolved(true);
 
-        ImporterTask importerTask = tasks.create("importRustResources", ImporterTask.class);
-        importerTask.setGroup("rust");
+        FixJarTask task = tasks.create("fixImport", FixJarTask.class);
+        task.setGroup("rust-import");
 
         project.afterEvaluate(p -> {
-            tasks.named("processResources").get().dependsOn(importerTask);
+            tasks.withType(ProcessResources.class).named("processResources").configure(it -> {
+                it.from(configuration);
+            });
+            tasks.named("build").get().dependsOn(task);
         });
     }
 }
