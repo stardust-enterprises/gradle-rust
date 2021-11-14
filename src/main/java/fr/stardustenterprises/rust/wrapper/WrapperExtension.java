@@ -48,11 +48,13 @@ public class WrapperExtension {
     public String crate = null;
 
     /**
-     * Map of the platform to target to the locations of the output executables/libraries.
+     * Map of the platform to target to the name of the output executables/libraries.
      * Each key in this map is a <a href="https://doc.rust-lang.org/nightly/rustc/platform-support.html">target triple</a>.
      * Use <code>""</code> an empty string to use the default platform.
      */
     public Map<String, String> outputs = new ConcurrentHashMap<>();
+
+    public String outputDirectory = "natives";
 
     /**
      * Build profile to use. If this is not set to <code>"debug"</code>,

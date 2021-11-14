@@ -3,16 +3,9 @@ package fr.stardustenterprises.rust.importer;
 import org.gradle.api.NonNullApi;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
-import org.gradle.api.artifacts.UnknownConfigurationException;
-import org.gradle.api.plugins.PluginManager;
 import org.gradle.api.tasks.TaskContainer;
-import org.gradle.jvm.tasks.Jar;
-import org.gradle.language.jvm.tasks.ProcessResources;
-
-import java.io.File;
 
 @NonNullApi
 public class ImporterPlugin implements Plugin<Project> {
@@ -29,7 +22,7 @@ public class ImporterPlugin implements Plugin<Project> {
         ImporterTask importerTask = tasks.create("importRustResources", ImporterTask.class);
         importerTask.setGroup("rust");
 
-        project.afterEvaluate(__ -> {
+        project.afterEvaluate(p -> {
             tasks.named("processResources").get().dependsOn(importerTask);
         });
     }

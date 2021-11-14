@@ -14,25 +14,24 @@
 
 package fr.stardustenterprises.rust.wrapper;
 
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.InputDirectory;
-import org.gradle.api.tasks.OutputFile;
+import org.gradle.api.tasks.OutputFiles;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.util.regex.Pattern;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * The main wrapper task.
@@ -45,7 +44,11 @@ public class WrapperTask extends DefaultTask {
     private List<String> args;
     private Map<String, String> environment;
 
-    private Map<String, File> targets;
+    private String outputDirectory;
+
+    private String profile;
+
+    private Map<String, String> targets;
 
     /**
      * This is an imperfect solution to incremental builds:
@@ -93,21 +96,16 @@ public class WrapperTask extends DefaultTask {
             this.args.add("--release");
         }
 
+        this.outputDirectory = config.outputDirectory;
+        this.profile = config.profile;
+
         this.args.addAll(config.arguments);
 
         this.environment = new ConcurrentHashMap<>(config.environment);
 
         this.workingDir = config.crate != null ? project.file(config.crate) : project.getProjectDir();
-        File targetDir = new File(this.workingDir, "target");
 
-        this.targets = new HashMap<>();
-
-        // For the default toolchain, the output is located in target/<file>
-        // For all other toolchains, the output is located in target/<target-triple>/<file>.
-        config.outputs.forEach((k, v) -> {
-            File parent = new File(targetDir, (k.isEmpty() ? "" : k + File.separator) + config.profile);
-            this.targets.put(k, new File(parent, v));
-        });
+        this.targets = new HashMap<>(config.outputs);
 
         this.outputFile = new File(project.getBuildDir(), OUTPUT_FILE_NAME + File.separator + "export.zip");
         File parent = this.outputFile.getParentFile();
@@ -128,6 +126,16 @@ public class WrapperTask extends DefaultTask {
     @TaskAction
     public void build() {
         Project project = getProject();
+
+        File outputStore = new File(project.getBuildDir(), OUTPUT_FILE_NAME);
+        if (outputStore.exists()) {
+            try {
+                FileUtils.deleteDirectory(outputStore);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        outputStore.mkdirs();
 
         // build targets
         boolean useCrossSyntax = this.command.toLowerCase(Locale.ROOT).contains("cross");
@@ -174,79 +182,77 @@ public class WrapperTask extends DefaultTask {
             throw new RuntimeException("Couldn't delete old output file.");
         }
 
-        File outputStore = new File(project.getBuildDir(), OUTPUT_FILE_NAME + File.separator + "root");
-        if (!outputStore.exists() && !outputStore.mkdirs()) {
-            throw new RuntimeException("Couldn't create output store.");
+        // move files
+        global:
+        for (String targetTriple : this.targets.keySet()) {
+            File targetBuildDir = new File(
+                    this.workingDir,
+                    "target" + File.separator +
+                            (targetTriple.isEmpty() ? "" : targetTriple + File.separator) +
+                            this.profile + File.separator);
+
+            if (!targetBuildDir.exists() || targetBuildDir.listFiles() == null) {
+                throw new RuntimeException("Invalid target directory for \"" + targetTriple + "\"!");
+            }
+
+            String outputName = this.targets.get(targetTriple);
+            int extIndex = outputName.lastIndexOf('.');
+            String extension = extIndex == -1
+                    ? "" : outputName.substring(extIndex + 1);
+
+            String[] targetData = targetTriple.split(Pattern.quote("-"));
+            String arch = targetData[0];
+            // account for weird targets like aarch64-fuchsia
+            String osName = targetData[targetData.length > 2 ? 2 : 1];
+
+            String pathToOutput = this.outputDirectory
+                    + File.separator + osName
+                    + File.separator + arch
+                    + File.separator + outputName;
+
+            for (File potentialOutput : requireNonNull(targetBuildDir.listFiles())) {
+                if (!potentialOutput.isFile()) continue;
+
+                String name = potentialOutput.getName();
+                String extension2 = name.lastIndexOf('.') == -1
+                        ? "" : name.substring(name.lastIndexOf('.') + 1);
+
+                if (extension.equalsIgnoreCase(extension2)) {
+                    File targetFile = new File(outputStore, pathToOutput);
+                    targetFile.getParentFile().mkdirs();
+
+                    if (targetFile.exists() && !targetFile.delete()) {
+                        throw new RuntimeException("Couldn't delete output file!");
+                    }
+
+                    try {
+                        Files.copy(potentialOutput.toPath(), targetFile.toPath());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    continue global;
+                }
+            }
         }
 
-        // normalize names
-        List<File> outputFiles = new ArrayList<>();
-        label:
-        for (File expectedOutput : this.targets.values()) {
-            if (!expectedOutput.exists()) {
-                File parent = expectedOutput.getParentFile();
-                File[] subFiles = parent.listFiles();
+        File[] files = outputStore.listFiles();
+        if (files == null) {
+            throw new RuntimeException("No outputs >.>");
+        }
 
-                if (subFiles == null) {
-                    throw new RuntimeException("What the fuck");
-                }
-
-                String name = expectedOutput.getName();
-
-                int index = name.lastIndexOf('.');
-                if (index == -1) {
-                    for (File f : subFiles) {
-                        if (f.isFile()) {
-                            if (f.getName().lastIndexOf('.') == -1) {
-                                outputFiles.add(defineCorrectFilename(outputStore, name, f));
-                                continue label;
-                            }
-                        }
-                    }
+        ZipFile zipFile = new ZipFile(this.outputFile);
+        for (File file : files) {
+            try {
+                if (file.isFile()) {
+                    zipFile.addFile(file);
                 } else {
-                    String ext = name.substring(index + 1);
-                    for (File f : subFiles) {
-                        if (f.isFile()) {
-                            int index2 = f.getName().lastIndexOf('.');
-                            if (index2 != -1 && f.getName().substring(index2 + 1).equalsIgnoreCase(ext)) {
-                                outputFiles.add(defineCorrectFilename(outputStore, name, f));
-                                continue label;
-                            }
-                        }
-                    }
+                    zipFile.addFolder(file);
                 }
-                continue;
+            } catch (ZipException e) {
+                throw new RuntimeException(e);
             }
-            outputFiles.add(expectedOutput);
         }
-
-        outputFiles.forEach(f -> System.out.println(f.exists() + f.getAbsolutePath()));
-
-        try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(this.outputFile.toPath()))) {
-            for (File file : outputFiles) {
-                Path path = file.toPath();
-                ZipEntry zipEntry = new ZipEntry(path.getFileName().toString());
-                zipOutputStream.putNextEntry(zipEntry);
-                Files.copy(path, zipOutputStream);
-            }
-        } catch (IOException exception) {
-            throw new RuntimeException("Couldn't write output file", exception);
-        }
-    }
-
-    private File defineCorrectFilename(File outputStore, String name, File f) {
-        File newFile = new File(outputStore, name);
-        if (newFile.exists()) newFile.delete();
-        try (FileInputStream fis = new FileInputStream(f);
-             FileOutputStream fos = new FileOutputStream(newFile)) {
-            int len;
-            byte[] buffer = new byte[4096];
-            while ((len = fis.read(buffer)) > 0) {
-                fos.write(buffer, 0, len);
-            }
-        } catch (IOException ignored) {
-        }
-        return newFile;
     }
 
     /**
@@ -257,8 +263,8 @@ public class WrapperTask extends DefaultTask {
         return this.workingDir;
     }
 
-    @OutputFile
-    public File getOutputFile() {
-        return this.outputFile;
+    @OutputFiles
+    public List<File> getOutputFile() {
+        return Collections.singletonList(this.outputFile);
     }
 }

@@ -16,6 +16,7 @@ repositories {
 
 dependencies {
     compileOnly(gradleApi())
+    implementation("commons-io:commons-io:2.11.0")
     implementation("net.lingala.zip4j:zip4j:2.9.0")
 }
 
