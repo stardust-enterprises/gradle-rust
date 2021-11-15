@@ -44,30 +44,14 @@ other subprojects:
 
 ```groovy
 // in example/app/build.gradle
-
-// This doesn't work properly yet since this plugin supports
-// multiple output files. Will try to figure out a workaround.
-
-/*
-configurations {
-    // Declare a custom configuration to
-    // resolve the library from :native
-    backend {
-        canBeConsumed false
-        canBeResolved true
-    }
+plugins {
+    id "fr.stardustenterprises.rust.importer" version "2.0.0-SNAPSHOT"
 }
 
 dependencies {
     // Depend on our native code
-    backend(project(':native'))
+    rustImport(project(':native'))
 }
-
-processResources {
-    // Copy the native library into the final jar
-    from(configurations.backend)
-}
-*/
 ```
 
 ## Configuration Options
