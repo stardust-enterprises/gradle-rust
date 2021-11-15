@@ -1,6 +1,7 @@
 plugins {
     id("java-gradle-plugin")
     id("maven-publish")
+    id("com.gradle.plugin-publish") version "0.15.0"
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -50,6 +51,48 @@ gradlePlugin {
             implementationClass = "fr.stardustenterprises.rust.importer.ImporterPlugin"
             displayName = "Rust Importer"
             description = "A plugin that makes it possible to import outputs from Rust from another Gradle project."
+        }
+    }
+}
+
+pluginBundle {
+    website = "https://github.com/stardust-enterprises/gradle-rust"
+    vcsUrl = "https://github.com/stardust-enterprises/gradle-rust.git"
+    tags = ['rust', 'cargo', 'native']
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            forEach {
+                if(it instanceof MavenPublication) {
+                    it.pom {
+                        url = "https://github.com/stardust-enterprises/gradle-rust"
+                        licenses {
+                            license {
+                                name = 'The Apache License, Version 2.0'
+                                url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                            }
+                        }
+                        developers {
+                            developer {
+                                id = 'xtrm'
+                                name = "xTrM_"
+                            }
+                            developer {
+                                id = 'arcblroth'
+                                name = "Arc'blroth"
+                            }
+                        }
+                        scm {
+                            def scmRepo = "scm:git:git://github.com/stardust-enterprises/gradle-rust.git"
+                            connection = scmRepo
+                            developerConnection = scmRepo
+                            url = scmRepo
+                        }
+                    }
+                }
+            }
         }
     }
 }
