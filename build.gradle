@@ -8,7 +8,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 group = "fr.stardustenterprises"
 archivesBaseName = "rust"
-version = "2.0.0-SNAPSHOT"
+version = "2.0.0"
 
 repositories {
     mavenCentral()

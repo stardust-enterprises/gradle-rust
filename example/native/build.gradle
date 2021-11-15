@@ -1,5 +1,5 @@
 plugins {
-    id 'fr.stardustenterprises.rust.wrapper' version '2.0.0-SNAPSHOT'
+    id 'fr.stardustenterprises.rust.wrapper' version '2.0.0'
 }
 
 rust {

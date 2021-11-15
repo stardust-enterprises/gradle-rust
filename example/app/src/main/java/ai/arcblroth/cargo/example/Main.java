@@ -8,6 +8,8 @@ import java.nio.channels.ReadableByteChannel;
 
 public class Main {
     static {
+        // invalid code
+        // todo: fix
         try {
             // Extract and load our native library
             String nativeLibraryName = System.mapLibraryName("wrapper_example");
