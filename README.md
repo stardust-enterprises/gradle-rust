@@ -12,7 +12,7 @@ To use the plugin, first apply it in a subproject:
 // in example/native/build.gradle
 
 plugins {
-    id "fr.stardustenterprises.rust.wrapper" version "2.0.0"
+    id "fr.stardustenterprises.rust.wrapper" version "2.1.0"
 }
 ```
 
@@ -45,7 +45,7 @@ other subprojects:
 ```groovy
 // in example/app/build.gradle
 plugins {
-    id "fr.stardustenterprises.rust.importer" version "2.0.0"
+    id "fr.stardustenterprises.rust.importer" version "2.1.0"
 }
 
 dependencies {

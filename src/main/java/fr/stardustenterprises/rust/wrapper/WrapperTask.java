@@ -184,31 +184,36 @@ public class WrapperTask extends DefaultTask {
 
         // move files
         global:
-        for (String targetTriple : this.targets.keySet()) {
+        for (String target : this.targets.keySet()) {
             File targetBuildDir = new File(
                     this.workingDir,
                     "target" + File.separator +
-                            (targetTriple.isEmpty() ? "" : targetTriple + File.separator) +
+                            (target.isEmpty() ? "" : target + File.separator) +
                             this.profile + File.separator);
 
             if (!targetBuildDir.exists() || targetBuildDir.listFiles() == null) {
-                throw new RuntimeException("Invalid target directory for \"" + targetTriple + "\"!");
+                throw new RuntimeException("Invalid target directory for \"" + target + "\"!");
             }
 
-            String outputName = this.targets.get(targetTriple);
+            String outputName = this.targets.get(target);
             int extIndex = outputName.lastIndexOf('.');
             String extension = extIndex == -1
                     ? "" : outputName.substring(extIndex + 1);
 
-            String[] targetData = targetTriple.split(Pattern.quote("-"));
-            String arch = targetData[0];
-            // account for weird targets like aarch64-fuchsia
-            String osName = targetData[targetData.length > 2 ? 2 : 1];
+            String pathToOutput = this.outputDirectory;
 
-            String pathToOutput = this.outputDirectory
-                    + File.separator + osName
-                    + File.separator + arch
-                    + File.separator + outputName;
+            if (target.trim().isEmpty()) {
+                pathToOutput += File.separator + outputName;
+            } else {
+                String[] targetData = target.split(Pattern.quote("-"));
+                String arch = targetData[0];
+                // account for weird targets like aarch64-fuchsia
+                String osName = targetData[targetData.length > 2 ? 2 : 1];
+
+                pathToOutput += File.separator + osName
+                        + File.separator + arch
+                        + File.separator + outputName;
+            }
 
             for (File potentialOutput : requireNonNull(targetBuildDir.listFiles())) {
                 if (!potentialOutput.isFile()) continue;
