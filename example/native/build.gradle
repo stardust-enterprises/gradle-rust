@@ -4,13 +4,13 @@ plugins {
 
 rust {
     command = "cargo"
+//    command = "cross"
 
     outputs = [
-            '': System.mapLibraryName("wrapper"),
+            '': System.mapLibraryName("wrapper_example"),
 //            'x86_64-unknown-linux-gnu': 'libwrapper_example.so',
 //            'x86_64-pc-windows-gnu': 'wrapper_example.dll',
-//            'arm-linux-androideabi': 'libwrapper_example.so'
-            //'aarch64-apple-darwin': 'libwrapper_example.dylib'
+//            'arm-linux-androideabi': 'libwrapper_example.so,
     ]
 
     outputDirectory = "META-INF/natives"

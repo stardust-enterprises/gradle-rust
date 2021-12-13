@@ -148,6 +148,8 @@ public class WrapperTask extends DefaultTask {
                     spec.args(args);
                     spec.workingDir(workingDir);
                     spec.environment(environment);
+
+                    System.out.println("> " + String.join(", ", spec.getCommandLine()));
                 }).assertNormalExitValue();
             } else {
 
@@ -163,6 +165,8 @@ public class WrapperTask extends DefaultTask {
                         spec.args(targetArgs);
                         spec.workingDir(workingDir);
                         spec.environment(this.environment);
+
+                        System.out.println("> " + String.join(", ", spec.getCommandLine()));
                     }).assertNormalExitValue();
                 });
             }
@@ -174,6 +178,8 @@ public class WrapperTask extends DefaultTask {
                 spec.args(args);
                 spec.workingDir(workingDir);
                 spec.environment(environment);
+
+                System.out.println("> " + String.join(", ", spec.getCommandLine()));
             }).assertNormalExitValue();
         }
 
