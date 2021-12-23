@@ -5,7 +5,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
 
-abstract class PluginTask<in T : IConfigExtension 59> : DefaultTask() {
+abstract class PluginTask<in T : IConfigExtension> : DefaultTask() {
 
     @TaskAction
     abstract fun doTask(project: Project)
