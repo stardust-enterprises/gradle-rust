@@ -1,11 +1,11 @@
-package fr.stardustenterprises.rust
+package fr.stardustenterprises.gradle.rust.importer
 
-import fr.stardustenterprises.rust.common.RustPlugin
+import fr.stardustenterprises.gradle.common.Plugin
 
-class ImporterPlugin : RustPlugin() {
+class ImporterPlugin : Plugin() {
     override var pluginId = "fr.stardustenterprises.rust.importer"
 
-    override fun applyPlugin() {
+    override fun postProcess() {
         this.project.run {
             println("Applying Importer plugin...")
         }

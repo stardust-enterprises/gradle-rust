@@ -1,8 +1,9 @@
+@file:Suppress("UnstableApiUsage")
+
 plugins {
     id("com.gradle.plugin-publish") version "0.18.0"
     `java-gradle-plugin`
     `maven-publish`
-    signing
 }
 
 dependencies {
@@ -26,13 +27,13 @@ gradlePlugin {
             displayName = "Rust Wrapper"
             description = "A plugin that wraps Rust's build systems, for embedding Rust libraries in Java projects."
             id = "fr.stardustenterprises.rust.wrapper"
-            implementationClass = "fr.stardustenterprises.rust.WrapperPlugin"
+            implementationClass = "fr.stardustenterprises.rust.wrapper.WrapperPlugin"
         }
         create("importerPlugin") {
             displayName = "Rust Importer"
             description = "A plugin that makes it possible to import outputs from Rust from another Gradle project."
             id = "fr.stardustenterprises.rust.importer"
-            implementationClass = "fr.stardustenterprises.rust.ImporterPlugin"
+            implementationClass = "fr.stardustenterprises.rust.importer.ImporterPlugin"
         }
     }
 }
@@ -80,8 +81,4 @@ publishing {
             }
         }
     }
-}
-
-signing {
-    sign(publishing.publications["mavenJava"])
 }
