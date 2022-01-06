@@ -7,22 +7,13 @@ import fr.stardustenterprises.gradle.rust.wrapper.task.RunTask
 import fr.stardustenterprises.gradle.rust.wrapper.task.TestTask
 
 class WrapperPlugin : Plugin() {
-    private lateinit var wrapperExtension: WrapperExtension
-    private lateinit var buildTask: BuildTask
-    private lateinit var runTask: RunTask
-    private lateinit var testTask: TestTask
-
     override var pluginId = "fr.stardustenterprises.rust.wrapper"
 
-    override fun setupTasks() {
-        wrapperExtension = project.extensions.create("rust", WrapperExtension::class.java)
-        buildTask = project.tasks.create("build", BuildTask::class.java).apply {
-            this.group = "rust"
-        }
-    }
-
-    override fun postProcess() {
-        buildTask.configure(wrapperExtension)
+    override fun applyPlugin() {
+        val wrapperExt = extension(WrapperExtension::class.java)
+        task(BuildTask::class.java) { configure(wrapperExt) }
+        task(RunTask::class.java) { configure(wrapperExt) }
+        task(TestTask::class.java) { configure(wrapperExt) }
     }
 
     override fun conflictsWithPlugins(): Array<String> =
