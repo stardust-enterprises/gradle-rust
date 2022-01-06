@@ -45,7 +45,11 @@ abstract class Plugin : Plugin<Project> {
     protected fun <T : PluginTask> task(taskClass: Class<out T>): T {
         val taskAnnotation = taskClass.getDeclaredAnnotation(Task::class.java)
             ?: throw RuntimeException("Task class missing @Task annotation!")
-        return this.project.tasks.create(taskAnnotation.name, taskClass)
+        return this.project.tasks.create(taskAnnotation.name, taskClass).also {
+            if (taskAnnotation.group != "NO-GROUP") {
+                it.group = taskAnnotation.group
+            }
+        }
     }
 
     protected fun <T, C : ConfigurableTask<T>> task(
