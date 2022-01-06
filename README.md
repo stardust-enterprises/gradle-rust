@@ -3,6 +3,10 @@
 A [Gradle](https://www.gradle.org) plugin that wraps Rust build systems,
 for embedding Rust libraries in JVM projects.
 
+**Please note:** This library is currently being rewritten entirely for
+better performance and ease of use. <br>You can check the progress on the 
+[dev/v3 branch](https://github.com/stardust-enterprises/gradle-rust/tree/dev/v3).
+
 ## Quickstart
 
 For a basic project setup, see the [example](example) folder.
