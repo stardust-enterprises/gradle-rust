@@ -8,8 +8,9 @@ plugins {
 
 dependencies {
     compileOnly(gradleApi())
-    implementation("commons-io:commons-io:2.11.0")
-    implementation("net.lingala.zip4j:zip4j:2.9.1")
+    implementation("org.tomlj:tomlj:1.0.0")
+//    implementation("commons-io:commons-io:2.11.0")
+//    implementation("net.lingala.zip4j:zip4j:2.9.1")
 }
 
 java {
@@ -27,13 +28,13 @@ gradlePlugin {
             displayName = "Rust Wrapper"
             description = "A plugin that wraps Rust's build systems, for embedding Rust libraries in Java projects."
             id = "fr.stardustenterprises.rust.wrapper"
-            implementationClass = "fr.stardustenterprises.rust.wrapper.WrapperPlugin"
+            implementationClass = "fr.stardustenterprises.gradle.rust.wrapper.WrapperPlugin"
         }
         create("importerPlugin") {
             displayName = "Rust Importer"
             description = "A plugin that makes it possible to import outputs from Rust from another Gradle project."
             id = "fr.stardustenterprises.rust.importer"
-            implementationClass = "fr.stardustenterprises.rust.importer.ImporterPlugin"
+            implementationClass = "fr.stardustenterprises.gradle.rust.importer.ImporterPlugin"
         }
     }
 }

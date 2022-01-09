@@ -2,36 +2,48 @@ package fr.stardustenterprises.gradle.rust.wrapper.task.wrap
 
 import fr.stardustenterprises.gradle.common.task.ConfigurableTask
 import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
 import org.gradle.process.internal.ExecException
 import java.io.File
 
 open class WrappedTask(
-    val command: String
+    private val command: String
 ) : ConfigurableTask<WrapperExtension>() {
 
     override fun doTask() {
-        executeCommand()
+        configuration.targets.forEach {
+            val args = getArguments().toMutableList()
+            args.add(0, command)
+            if (it.key.isNotEmpty()) args += "--target=${it.key}"
+            executeCommand(arguments = args)
+        }
     }
 
     @Throws(ExecException::class)
-    open fun executeCommand() {
+    open fun executeCommand(
+        commandLine: String = getCommandLine(),
+        arguments: List<String> = getArguments(),
+        workingDir: File = getWorkingDir(),
+        environment: Map<String, String> = getEnvironment()
+    ) {
         project.exec {
-            it.commandLine(getCommandLine())
-            it.args(getArguments())
-            it.workingDir(getWorkingDir())
-            it.environment(getEnvironment())
+            it.commandLine(commandLine)
+            it.args(arguments)
+            it.workingDir(workingDir)
+            it.environment(environment)
         }.assertNormalExitValue()
     }
 
-    open fun getCommandLine(): String =
-        configuration.command.getOrElse("cargo")
+    @Input
+    open fun getCommandLine(): String = configuration.command.getOrElse("cargo")
 
-    open fun getArguments(): List<String> =
-        listOf() //TODO
+    @Input
+    open fun getArguments(): List<String> = listOf()
 
-    open fun getWorkingDir(): File =
-        configuration.crate.asFile.getOrElse(project.projectDir)
+    @InputDirectory
+    open fun getWorkingDir(): File = configuration.crate.asFile.getOrElse(project.projectDir)
 
-    open fun getEnvironment(): Map<String, String> =
-        configuration.environment
+    @Input
+    open fun getEnvironment(): Map<String, String> = configuration.environment
 }

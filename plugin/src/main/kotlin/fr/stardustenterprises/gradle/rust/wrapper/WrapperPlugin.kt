@@ -8,12 +8,20 @@ import fr.stardustenterprises.gradle.rust.wrapper.task.TestTask
 
 class WrapperPlugin : Plugin() {
     override var pluginId = "fr.stardustenterprises.rust.wrapper"
+    private lateinit var wrapperExtension: WrapperExtension
 
     override fun applyPlugin() {
-        val wrapperExt = extension(WrapperExtension::class.java)
-        task(BuildTask::class.java) { configure(wrapperExt) }
-        task(RunTask::class.java) { configure(wrapperExt) }
-        task(TestTask::class.java) { configure(wrapperExt) }
+        wrapperExtension = extension(WrapperExtension::class.java)
+
+        task(BuildTask::class.java) { configure(wrapperExtension) }
+        task(RunTask::class.java) { configure(wrapperExtension) }
+        task(TestTask::class.java) { configure(wrapperExtension) }
+    }
+
+    override fun afterEvaluate() {
+        if (wrapperExtension.targets.isEmpty()) {
+            throw RuntimeException("Please define a target platform.")
+        }
     }
 
     override fun conflictsWithPlugins(): Array<String> =
