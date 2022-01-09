@@ -31,7 +31,10 @@ abstract class WrapperExtension
 
     @Input
     val outputBaseName: Property<String> =
-        objects.property(String::class.java).convention("") // default to the name in Cargo.toml
+        objects.property(String::class.java).convention(getCargoName()) // default to the name in Cargo.toml
+
+    @Input
+    val release: Boolean = false
 
     @Input
     val targets: MutableMap<String, String> = mutableMapOf()
@@ -42,22 +45,16 @@ abstract class WrapperExtension
     @Input
     val environment: MutableMap<String, String> = mutableMapOf()
 
-    fun getOutputBaseName(): String {
-        return outputBaseName.getOrElse(getCargoName())
-    }
-
     private fun getCargoName(): String {
-        val cargoTomlFile = crate.file("Cargo.toml").get().asFile
-
+        val cargoTomlFile = crate.file("Cargo.toml").get().asFile ?: throw RuntimeException("Cargo.toml file not found!")
         if (!cargoTomlFile.exists()) throw RuntimeException("Cargo.toml file not found!")
 
         val result: TomlParseResult = Toml.parse(cargoTomlFile.toPath())
-        return result.getString("package.name")
-            ?: throw RuntimeException("Couldn't find package name")
+        return result.getString("package.name") ?: throw RuntimeException("Couldn't find package name")
     }
 
     fun defaultTarget(
-        binaryName: String = System.mapLibraryName(getOutputBaseName())
+        binaryName: String = System.mapLibraryName(outputBaseName.get())
     ): Pair<String, String> {
         return Pair("", binaryName)
     }

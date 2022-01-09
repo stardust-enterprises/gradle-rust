@@ -4,11 +4,13 @@ import fr.stardustenterprises.gradle.common.task.ConfigurableTask
 import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.Internal
 import org.gradle.process.internal.ExecException
 import java.io.File
 
 open class WrappedTask(
-    private val command: String
+    @Internal
+    protected val command: String
 ) : ConfigurableTask<WrapperExtension>() {
 
     override fun doTask() {
