@@ -46,41 +46,40 @@ pluginBundle {
     tags = listOf("rust", "rustlang", "cargo", "native", "wrapper")
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            groupId = Coordinates.GROUP
-            version = Coordinates.VERSION
+publishing.publications {
+    create<MavenPublication>("mavenJava") {
+        groupId = Coordinates.GROUP
+        version = Coordinates.VERSION
 
-            pom {
-                val repo = Coordinates.REPO_ID
+        pom {
+            val repo = Coordinates.REPO_ID
 
-                name.set(Coordinates.NAME)
-                description.set(Coordinates.DESC)
+            name.set(Coordinates.NAME)
+            description.set(Coordinates.DESC)
+            url.set("https://github.com/$repo")
+
+            licenses {
+                Pom.licenses.forEach {
+                    license {
+                        name.set(it.name)
+                        url.set(it.url)
+                    }
+                }
+            }
+            developers {
+                Pom.developers.forEach {
+                    developer {
+                        id.set(it.id)
+                        name.set(it.name)
+                    }
+                }
+            }
+            scm {
+                connection.set("scm:git:git://github.com/$repo.git")
+                developerConnection.set("scm:git:ssh://github.com/$repo.git")
                 url.set("https://github.com/$repo")
-
-                licenses {
-                    Pom.licenses.forEach {
-                        license {
-                            name.set(it.name)
-                            url.set(it.url)
-                        }
-                    }
-                }
-                developers {
-                    Pom.developers.forEach {
-                        developer {
-                            id.set(it.id)
-                            name.set(it.name)
-                        }
-                    }
-                }
-                scm {
-                    connection.set("scm:git:git://github.com/$repo.git")
-                    developerConnection.set("scm:git:ssh://github.com/$repo.git")
-                    url.set("https://github.com/$repo")
-                }
             }
         }
     }
 }
+

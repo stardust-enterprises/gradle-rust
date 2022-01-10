@@ -8,7 +8,6 @@ import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
 import org.apache.commons.io.FileUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.util.regex.Pattern
 
 @Task(
     group = "rust", name = "build"
@@ -43,32 +42,40 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                 it.standardOutput = stdout
             }.assertNormalExitValue()
 
-            for (str in stdout.toString().split(Pattern.quote("\n"))) {
-                println(str.trim())
-                val jsonObject = json.fromJson(str.trim(), JsonObject::class.java)
-                val reason = jsonObject.get("reason").asString
-                if (reason.equals("compiler-artifact", true)) {
-                    val manifestPath = jsonObject.get("manifest_path").asString
-                    if(manifestPath.equals(cargoTomlFile.absolutePath, true)) {
-                        val array = jsonObject.getAsJsonArray("filenames")
-                        if(array.size() > 1) {
-                            throw RuntimeException("Cannot process more than 1 output.")
-                        }
-                        array.forEach {
-                            val file = File(it.asString)
-                            if(!file.exists()) {
-                                throw RuntimeException("Cannot find output file!")
+            var output: File? = null
+
+            for (str in stdout.toString().trim().split("\n")) {
+                try {
+                    val jsonStr = str.trim()
+                    val jsonObject = json.fromJson(jsonStr, JsonObject::class.java)
+                    val reason = jsonObject.get("reason").asString
+                    if (reason.equals("compiler-artifact", true)) {
+                        val manifestPath = jsonObject.get("manifest_path").asString
+                        if(manifestPath.equals(cargoTomlFile.absolutePath, true)) {
+                            val array = jsonObject.getAsJsonArray("filenames")
+                            if(array.size() > 1) {
+                                throw RuntimeException("Cannot process more than 1 output.")
                             }
-                            exportMap[target.key] = file
+                            array.forEach {
+                                val file = File(it.asString)
+                                if(!file.exists()) {
+                                    throw RuntimeException("Cannot find output file!")
+                                }
+                                output = file
+                            }
                         }
                     }
+                } catch(_: Throwable) {
                 }
-                println("done")
-                System.out.flush()
-                System.err.flush()
             }
+
+            if(output == null) {
+                throw RuntimeException("Didn't find the output file... report this.")
+            }
+
+            exportMap[target.key] = output!!
         }
 
-        println(exportMap)
+
     }
 }
