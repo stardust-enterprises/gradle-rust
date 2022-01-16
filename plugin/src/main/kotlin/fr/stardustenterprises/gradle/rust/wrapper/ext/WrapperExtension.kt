@@ -10,14 +10,14 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Internal
 import org.tomlj.Toml
-import org.tomlj.TomlParseResult
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
 
 @Extension("rust")
 abstract class WrapperExtension
 @Inject constructor(
-    project: Project
+    val project: Project
 ) {
 
     @Internal
@@ -46,17 +46,34 @@ abstract class WrapperExtension
     val environment: MutableMap<String, String> = mutableMapOf()
 
     private fun getCargoName(): String {
-        val cargoTomlFile = crate.file("Cargo.toml").get().asFile ?: throw RuntimeException("Cargo.toml file not found!")
+        val cargoTomlFile =
+            crate.file("Cargo.toml").get().asFile ?: throw RuntimeException("Cargo.toml file not found!")
         if (!cargoTomlFile.exists()) throw RuntimeException("Cargo.toml file not found!")
 
-        val result: TomlParseResult = Toml.parse(cargoTomlFile.toPath())
+        val result = Toml.parse(cargoTomlFile.toPath())
         return result.getString("package.name") ?: throw RuntimeException("Couldn't find package name")
+    }
+
+    private val defaultTarget: String by lazy {
+        val stdout = ByteArrayOutputStream()
+        project.exec {
+            it.commandLine("rustup")
+            it.args("default")
+            it.workingDir(crate.asFile.getOrElse(project.projectDir))
+            it.environment(environment)
+            it.standardOutput = stdout
+        }.assertNormalExitValue()
+
+        val targetOutput = stdout.toString()
+            .replace("(default)", "")
+            .replace("stable", "")
+            .replace('\n', ' ').trim()
+
+        targetOutput.split('-').filter(String::isNotEmpty).joinToString("-")
     }
 
     fun defaultTarget(
         binaryName: String = System.mapLibraryName(outputBaseName.get())
-    ): Pair<String, String> {
-        return Pair("", binaryName)
-    }
+    ): Pair<String, String> = Pair(defaultTarget, binaryName)
 }
 

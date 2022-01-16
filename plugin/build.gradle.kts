@@ -8,6 +8,8 @@ plugins {
 
 dependencies {
     compileOnly(gradleApi())
+    implementation(kotlin("stdlib"))
+
     implementation("org.tomlj:tomlj:1.0.0")
     implementation("commons-io:commons-io:2.11.0")
     implementation("com.google.code.gson:gson:2.8.9")
