@@ -3,6 +3,7 @@ package fr.stardustenterprises.gradle.rust.wrapper
 import fr.stardustenterprises.gradle.common.Plugin
 import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
 import fr.stardustenterprises.gradle.rust.wrapper.task.BuildTask
+import fr.stardustenterprises.gradle.rust.wrapper.task.CleanTask
 import fr.stardustenterprises.gradle.rust.wrapper.task.RunTask
 import fr.stardustenterprises.gradle.rust.wrapper.task.TestTask
 import org.gradle.api.Project
@@ -20,6 +21,7 @@ class WrapperPlugin : Plugin() {
         this.buildTaskProvider = task(BuildTask::class.java) { configure(wrapperExtension) }
         task(RunTask::class.java) { configure(wrapperExtension) }
         task(TestTask::class.java) { configure(wrapperExtension) }
+        task(CleanTask::class.java) { configure(wrapperExtension) }
     }
 
     override fun afterEvaluate(project: Project) {

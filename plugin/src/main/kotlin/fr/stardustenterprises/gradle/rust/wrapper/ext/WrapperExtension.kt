@@ -19,7 +19,6 @@ abstract class WrapperExtension
 @Inject constructor(
     val project: Project
 ) {
-
     @Internal
     private val objects = project.objects
 

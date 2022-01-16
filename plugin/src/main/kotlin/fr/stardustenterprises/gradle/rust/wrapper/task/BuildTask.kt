@@ -9,13 +9,15 @@ import fr.stardustenterprises.gradle.rust.data.TargetExport
 import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
 import net.lingala.zip4j.ZipFile
 import org.apache.commons.io.FileUtils
+import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFile
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.stream.Collectors
 import java.util.zip.ZipException
+
 
 @Task(
     group = "rust", name = "build"
@@ -25,8 +27,10 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         private val json = GsonBuilder().setPrettyPrinting().serializeNulls().create()
     }
 
-    @InputDirectory
-    lateinit var workingDir: File
+    private lateinit var workingDir: File
+
+    @InputFiles
+    lateinit var inputFiles: FileCollection
 
     @Input
     lateinit var targets: Set<String>
@@ -36,10 +40,18 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         private set
 
     override fun applyConfiguration() {
-        this.workingDir = configuration.crate.asFile.getOrElse(project.projectDir)
-        this.targets = configuration.targets.keys
+        this.workingDir = this.configuration.crate.asFile.getOrElse(this.project.projectDir)
 
-        val rustDir = project.buildDir.resolve("rust")
+        this.inputFiles = project.files()
+
+        this.workingDir.listFiles { f -> f.name.endsWith(".toml") }?.forEach {
+            this.inputFiles = this.inputFiles.plus(this.project.fileTree(it))
+        }
+        this.inputFiles = this.inputFiles.plus(this.project.fileTree(this.workingDir.resolve("src")))
+
+        this.targets = this.configuration.targets.keys
+
+        val rustDir = this.project.buildDir.resolve("rust")
         this.exportsZip = rustDir.resolve("exports.zip")
     }
 
@@ -47,19 +59,20 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         val exportMap = mutableMapOf<String, File>()
 
         val cargoTomlFile =
-            configuration.crate.file("Cargo.toml").get().asFile ?: throw RuntimeException("Cargo.toml file not found!")
+            this.configuration.crate.file("Cargo.toml").get().asFile
+                ?: throw RuntimeException("Cargo.toml file not found!")
 
-        configuration.targets.forEach { target ->
+        this.configuration.targets.forEach { target ->
             val args = mutableListOf("build", "--message-format=json")
 
             if (target.key.isNotEmpty()) args += "--target=${target.key}"
 
             val stdout = ByteArrayOutputStream()
-            project.exec {
-                it.commandLine(configuration.command.getOrElse("cargo"))
+            this.project.exec {
+                it.commandLine(this.configuration.command.getOrElse("cargo"))
                 it.args(args)
-                it.workingDir(workingDir)
-                it.environment(configuration.environment)
+                it.workingDir(this.workingDir)
+                it.environment(this.configuration.environment)
                 it.standardOutput = stdout
             }.assertNormalExitValue()
 
@@ -101,7 +114,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
     }
 
     private fun writeExports(map: Map<String, File>) {
-        val rustDir = project.buildDir.resolve("rust")
+        val rustDir = this.project.buildDir.resolve("rust")
         FileUtils.deleteDirectory(rustDir)
         rustDir.mkdirs()
         val outputDir = rustDir.resolve("outputs")
@@ -167,7 +180,9 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
 
         val files: Array<File> = outputDir.listFiles() ?: throw RuntimeException("No outputs >.>")
 
-        if (exportsZip.exists()) exportsZip.delete()
+        if (this.exportsZip.exists()) {
+            this.exportsZip.delete()
+        }
         val zipFile = ZipFile(this.exportsZip)
 
         try {
