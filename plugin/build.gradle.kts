@@ -13,7 +13,7 @@ dependencies {
     implementation("org.tomlj:tomlj:1.0.0")
     implementation("commons-io:commons-io:2.11.0")
     implementation("com.google.code.gson:gson:2.8.9")
-//    implementation("net.lingala.zip4j:zip4j:2.9.1")
+    implementation("net.lingala.zip4j:zip4j:2.9.1")
 }
 
 java {

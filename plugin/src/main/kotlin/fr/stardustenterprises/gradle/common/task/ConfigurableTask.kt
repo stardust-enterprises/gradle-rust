@@ -14,6 +14,7 @@ abstract class ConfigurableTask<in T> : PluginTask() {
 
     fun configure(configuration: T) {
         this._configuration = configuration
+        applyConfiguration()
     }
 
 }

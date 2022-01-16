@@ -7,12 +7,15 @@ import fr.stardustenterprises.gradle.common.task.Task
 import fr.stardustenterprises.gradle.rust.data.Exports
 import fr.stardustenterprises.gradle.rust.data.TargetExport
 import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
+import net.lingala.zip4j.ZipFile
 import org.apache.commons.io.FileUtils
-import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.OutputFile
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.stream.Collectors
+import java.util.zip.ZipException
 
 @Task(
     group = "rust", name = "build"
@@ -22,13 +25,23 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         private val json = GsonBuilder().setPrettyPrinting().serializeNulls().create()
     }
 
-    @Internal
-    lateinit var exportsFile: File
-        private set
+    @InputDirectory
+    lateinit var workingDir: File
+
+    @Input
+    lateinit var targets: Set<String>
 
     @OutputFile
     lateinit var exportsZip: File
         private set
+
+    override fun applyConfiguration() {
+        this.workingDir = configuration.crate.asFile.getOrElse(project.projectDir)
+        this.targets = configuration.targets.keys
+
+        val rustDir = project.buildDir.resolve("rust")
+        this.exportsZip = rustDir.resolve("exports.zip")
+    }
 
     override fun doTask() {
         val exportMap = mutableMapOf<String, File>()
@@ -45,7 +58,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
             project.exec {
                 it.commandLine(configuration.command.getOrElse("cargo"))
                 it.args(args)
-                it.workingDir(configuration.crate.asFile.getOrElse(project.projectDir))
+                it.workingDir(workingDir)
                 it.environment(configuration.environment)
                 it.standardOutput = stdout
             }.assertNormalExitValue()
@@ -88,11 +101,13 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
     }
 
     private fun writeExports(map: Map<String, File>) {
-        val outputFile = project.buildDir.resolve("rust")
-        FileUtils.deleteDirectory(outputFile)
-        outputFile.mkdirs()
+        val rustDir = project.buildDir.resolve("rust")
+        FileUtils.deleteDirectory(rustDir)
+        rustDir.mkdirs()
+        val outputDir = rustDir.resolve("outputs")
+        outputDir.mkdirs()
 
-        exportsFile = outputFile.resolve("exports.json")
+        val exportsFile = rustDir.resolve("exports.json")
 
         val exportsList = mutableListOf<TargetExport>()
 
@@ -138,10 +153,39 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
             var os = parsedData.stream().collect(Collectors.joining("-"))
             if (os.isEmpty()) os = "unknown"
 
-            exportsList += TargetExport(it.key, os, arch, it.value)
+            exportsList += TargetExport(os, arch, it.key, it.value.name)
+
+            val targetDir = outputDir.resolve(it.key)
+            targetDir.mkdirs()
+            val targetFile = targetDir.resolve(it.value.name)
+            if (targetFile.exists()) targetFile.delete()
+            it.value.copyTo(targetFile)
         }
 
         val exports = Exports(1, exportsList)
         exportsFile.writeText(json.toJson(exports))
+
+        val files: Array<File> = outputDir.listFiles() ?: throw RuntimeException("No outputs >.>")
+
+        if (exportsZip.exists()) exportsZip.delete()
+        val zipFile = ZipFile(this.exportsZip)
+
+        try {
+            zipFile.addFile(exportsFile)
+        } catch (e: ZipException) {
+            throw RuntimeException(e)
+        }
+
+        for (file in files) {
+            try {
+                if (file.isFile) {
+                    zipFile.addFile(file)
+                } else {
+                    zipFile.addFolder(file)
+                }
+            } catch (e: ZipException) {
+                throw RuntimeException(e)
+            }
+        }
     }
 }
