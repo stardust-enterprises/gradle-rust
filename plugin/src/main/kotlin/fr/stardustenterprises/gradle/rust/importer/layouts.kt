@@ -1,17 +1,49 @@
 package fr.stardustenterprises.gradle.rust.importer
 
-import fr.stardustenterprises.gradle.rust.data.TargetExport
+import java.io.File
 
-val layouts = mapOf(
-    "flat" to "{name}",
-    "hierarchical" to "{os}/{arch}/{name}"
+val LAYOUT_REGISTRY = mutableMapOf(
+    "hierarchical" to HierarchicalLayout(),
+    "flat" to FlatLayout()
 )
 
-fun getLayout(name: String, target: TargetExport): String {
-    val layout =
-        layouts[name] ?: throw RuntimeException("Unknown layout, valid ones are: ${layouts.keys.joinToString(", ")}")
-    return layout
-        .replace("{os}", target.targetOperatingSystem)
-        .replace("{arch}", target.targetArchitecture)
-        .replace("{name}", target.binaryFile)
+@FunctionalInterface
+interface ILayout {
+    fun getPathForTarget(
+        root: String,
+        osName: String,
+        archName: String,
+        targetName: String,
+    ): String
+}
+
+class HierarchicalLayout : ILayout {
+    override fun getPathForTarget(
+        root: String,
+        osName: String,
+        archName: String,
+        targetName: String,
+    ): String =
+        root +
+                (if (root.endsWith(File.separator)) "" else File.separator) +
+                targetName
+}
+
+class FlatLayout : ILayout {
+    override fun getPathForTarget(
+        root: String,
+        osName: String,
+        archName: String,
+        targetName: String,
+    ): String =
+        root +
+                (if (root.endsWith(File.separator)) "" else File.separator) +
+                osName +
+                File.separator +
+                (if (archName.isNotEmpty()) {
+                    archName +
+                            File.separator
+                } else "") +
+                targetName
+
 }
