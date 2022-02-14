@@ -24,7 +24,13 @@ import java.util.zip.ZipException
 )
 open class BuildTask : ConfigurableTask<WrapperExtension>() {
     companion object {
-        private val json = GsonBuilder().setPrettyPrinting().serializeNulls().create()
+        private const val EXPORTS_FILE_NAME =
+            "_fr_stardustenterprises_gradle_rust_exports.zip"
+
+        private val json = GsonBuilder()
+            .setPrettyPrinting()
+            .serializeNulls()
+            .create()
     }
 
     private lateinit var workingDir: File
@@ -52,7 +58,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         this.targets = this.configuration.targets.keys
 
         val rustDir = this.project.buildDir.resolve("rust")
-        this.exportsZip = rustDir.resolve("exports.zip")
+        this.exportsZip = rustDir.resolve(EXPORTS_FILE_NAME)
     }
 
     override fun doTask() {

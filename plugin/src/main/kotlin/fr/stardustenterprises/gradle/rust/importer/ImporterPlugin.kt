@@ -8,6 +8,7 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.language.jvm.tasks.ProcessResources
 
+
 class ImporterPlugin : Plugin() {
     override var pluginId = "fr.stardustenterprises.rust.importer"
 
@@ -15,9 +16,9 @@ class ImporterPlugin : Plugin() {
     private lateinit var configuration: Configuration
 
     override fun applyPlugin() {
-        configuration = project.configurations.create("rust")
-        configuration.isCanBeConsumed = false
-        configuration.isCanBeResolved = true
+        this.configuration = project.configurations.create("rust")
+        this.configuration.isCanBeConsumed = false
+        this.configuration.isCanBeResolved = true
 
         val importerExtension = extension(ImporterExtension::class.java)
         this.fixJarTaskProvider = task(FixJarTask::class.java) { configure(importerExtension) }
@@ -25,11 +26,12 @@ class ImporterPlugin : Plugin() {
 
     @Suppress("UnstableApiUsage")
     override fun afterEvaluate(project: Project) {
-        val processResources = project.tasks.withType(ProcessResources::class.java).named("processResources")
-        processResources.configure {
-            it.from(configuration)
-        }
-        processResources.get().dependsOn(this.fixJarTaskProvider)
+        project.tasks.withType(ProcessResources::class.java)
+            .named("processResources")
+            .configure {
+                it.from(configuration)
+            }
+        project.tasks.named("build").get().dependsOn(this.fixJarTaskProvider)
     }
 
     override fun conflictsWithPlugins(): Array<String> =
