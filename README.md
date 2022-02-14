@@ -2,6 +2,9 @@
 a plugin for inter-compatibility with [rust][rust] 
 inside [gradle][gradle] projects.
 
+# how to use
+check out this [example repository][example] to learn how to use gradle-rust
+
 # contributing
 **please note**: this branch of the project is currently under heavy development.
 
@@ -14,6 +17,8 @@ this project is under the [ISC license][blob-license].
 [rust]: https://rust-lang.org "rust-lang website"
 
 [gradle]: https://rust-lang.org "gradle website"
+
+[example]: https://github.com/stardust-enterprises/gradle-rust-example
 
 [fork]: https://github.com/stardust-enterprises/gradle-rust/fork "fork this repository"
 
