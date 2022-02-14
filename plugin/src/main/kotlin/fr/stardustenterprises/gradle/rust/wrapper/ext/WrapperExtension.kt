@@ -17,20 +17,26 @@ import javax.inject.Inject
 @Extension("rust")
 abstract class WrapperExtension
 @Inject constructor(
-    val project: Project
+    val project: Project,
 ) {
     @Internal
     private val objects = project.objects
 
     @Input
-    val command: Property<String> = objects.property(String::class.java).convention("cargo")
-
-    @InputDirectory
-    val crate: DirectoryProperty = objects.directoryProperty().convention(project.layout.projectDirectory)
+    val command: Property<String> = objects.property(String::class.java)
+        .convention("cargo")
 
     @Input
-    val outputBaseName: Property<String> =
-        objects.property(String::class.java).convention(getCargoName()) // default to the name in Cargo.toml
+    val toolchain: Property<String> = objects.property(String::class.java)
+        .convention("")
+
+    @InputDirectory
+    val crate: DirectoryProperty = objects.directoryProperty()
+        .convention(project.layout.projectDirectory)
+
+    @Input
+    val outputBaseName: Property<String> = objects.property(String::class.java)
+        .convention(getCargoName()) // default to the name in Cargo.toml
 
     @Input
     val release: Boolean = false
@@ -39,7 +45,7 @@ abstract class WrapperExtension
     val targets: MutableMap<String, String> = mutableMapOf()
 
     @Input
-    val compilerArgs: MutableMap<String, String> = mutableMapOf()
+    val compilerArgs: MutableSet<String> = mutableSetOf()
 
     @Input
     val environment: MutableMap<String, String> = mutableMapOf()
@@ -63,16 +69,20 @@ abstract class WrapperExtension
             it.standardOutput = stdout
         }.assertNormalExitValue()
 
-        val targetOutput = stdout.toString()
+        var targetOutput = stdout.toString()
             .replace("(default)", "")
-            .replace("stable", "")
             .replace('\n', ' ').trim()
+
+        // stable-, naughty-
+        targetOutput = targetOutput.substring(
+            targetOutput.indexOf('-') + 1
+        )
 
         targetOutput.split('-').filter(String::isNotEmpty).joinToString("-")
     }
 
     fun defaultTarget(
-        binaryName: String = System.mapLibraryName(outputBaseName.get())
+        binaryName: String = System.mapLibraryName(outputBaseName.get()),
     ): Pair<String, String> = Pair(defaultTarget, binaryName)
 }
 

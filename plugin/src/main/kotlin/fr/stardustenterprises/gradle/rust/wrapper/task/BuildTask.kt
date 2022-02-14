@@ -41,6 +41,9 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
     @Input
     lateinit var targets: Set<String>
 
+    @Input
+    lateinit var globalArgs: MutableSet<String>
+
     @OutputFile
     lateinit var exportsZip: File
         private set
@@ -56,6 +59,22 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         this.inputFiles = this.inputFiles.plus(this.project.fileTree(this.workingDir.resolve("src")))
 
         this.targets = this.configuration.targets.keys
+        this.globalArgs = mutableSetOf()
+
+        val toolchainInput = this.configuration.toolchain.get()
+        if (!toolchainInput.isNullOrBlank()) {
+            // Remove a preceding `+`, if present.
+            val toolchain: String =
+                if (toolchainInput.startsWith("+")) toolchainInput.substring(1) else toolchainInput
+            if (toolchain.isEmpty()) {
+                throw RuntimeException("Toolchain cannot be empty")
+            }
+            this.globalArgs.add("+$toolchain")
+        }
+        if(this.configuration.release) {
+            this.globalArgs.add("--release")
+        }
+        this.configuration.compilerArgs.forEach(this.globalArgs::add)
 
         val rustDir = this.project.buildDir.resolve("rust")
         this.exportsZip = rustDir.resolve(EXPORTS_FILE_NAME)
@@ -68,14 +87,23 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
             this.configuration.crate.file("Cargo.toml").get().asFile
                 ?: throw RuntimeException("Cargo.toml file not found!")
 
+        val command = this.configuration.command.getOrElse("cargo")
+
         this.configuration.targets.forEach { target ->
             val args = mutableListOf("build", "--message-format=json")
 
-            if (target.key.isNotEmpty()) args += "--target=${target.key}"
+            if (target.key.isNotEmpty()) {
+                args += "--target=${target.key}"
+                println("Building for target \"${target.key}\"")
+            } else {
+                println("Building for default target...")
+            }
+
+            this.globalArgs.forEach(args::add)
 
             val stdout = ByteArrayOutputStream()
             this.project.exec {
-                it.commandLine(this.configuration.command.getOrElse("cargo"))
+                it.commandLine(command)
                 it.args(args)
                 it.workingDir(this.workingDir)
                 it.environment(this.configuration.environment)
@@ -87,19 +115,41 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
             for (str in stdout.toString().trim().split("\n")) {
                 try {
                     val jsonStr = str.trim()
+
                     val jsonObject = json.fromJson(jsonStr, JsonObject::class.java)
                     val reason = jsonObject.get("reason").asString
                     if (reason.equals("compiler-artifact", true)) {
-                        val manifestPath = jsonObject.get("manifest_path").asString
+                        var manifestPath = jsonObject.get("manifest_path").asString
+
+                        if (manifestPath.startsWith("/project")) {
+                            manifestPath = manifestPath.replaceFirst("/project",
+                                project.projectDir.absolutePath.let {
+                                    if (it.endsWith(File.separatorChar)) it.substring(0,
+                                        it.length - 1) else it
+                                })
+                        }
+
                         if (manifestPath.equals(cargoTomlFile.absolutePath, true)) {
                             val array = jsonObject.getAsJsonArray("filenames")
                             if (array.size() > 1) {
                                 throw RuntimeException("Cannot process more than 1 output.")
                             }
-                            array.forEach {
-                                val file = File(it.asString)
+                            array.forEach { elem ->
+                                var binPath = elem.asString
+                                if (binPath.startsWith("/project")) {
+                                    binPath = binPath.replaceFirst("/project",
+                                        project.projectDir.absolutePath.let {
+                                            if (it.endsWith(File.separatorChar)) it.substring(0,
+                                                it.length - 1) else it
+                                        })
+                                }
+
+                                var file = File(binPath)
                                 if (!file.exists()) {
-                                    throw RuntimeException("Cannot find output file!")
+                                    file = File(project.projectDir, binPath)
+                                    if (!file.exists()) {
+                                        throw RuntimeException("Cannot find output file!")
+                                    }
                                 }
                                 output = file
                             }
@@ -110,7 +160,9 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
             }
 
             if (output == null) {
-                throw RuntimeException("Didn't find the output file... report this.")
+                throw RuntimeException("Didn't find the output file... report this.\nCommand: \"$command ${
+                    args.joinToString(" ")
+                }\"")
             }
 
             exportMap[target.key] = output!!
