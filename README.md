@@ -2,16 +2,19 @@
 a plugin for inter-compatibility with [rust][rust] 
 inside [gradle][gradle] projects.
 
-# how to use
+## how to use
 check out this [example repository][example] to learn how to use gradle-rust
 
-# contributing
+## todo
+- use NamedDomainObjectContainer to better the target declaration syntax (?)
+
+## contributing
 **please note**: this branch of the project is currently under heavy development.
 
 you can contribute by [forking the repository][fork], making your changes and [creating a new pull request][new-pr]
 describing what you changed, why and how.
 
-# licensing
+## licensing
 this project is under the [ISC license][blob-license].
 
 [rust]: https://rust-lang.org "rust-lang website"
