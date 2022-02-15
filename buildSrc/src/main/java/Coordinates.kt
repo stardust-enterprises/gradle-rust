@@ -3,7 +3,7 @@ object Coordinates {
     const val DESC = "Compile and use Rust projects within a Gradle project."
 
     const val GROUP = "fr.stardustenterprises.rust"
-    const val VERSION = "3.1.0"
+    const val VERSION = "3.1.1"
     const val REPO_ID = "stardust-enterprises/gradle-rust"
 }
 
