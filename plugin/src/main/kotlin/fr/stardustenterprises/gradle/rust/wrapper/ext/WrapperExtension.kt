@@ -39,7 +39,8 @@ abstract class WrapperExtension
         .convention(getCargoName()) // default to the name in Cargo.toml
 
     @Input
-    val release: Boolean = false
+    val release: Property<Boolean> = objects.property(Boolean::class.java)
+        .convention(false)
 
     @Input
     val targets: MutableMap<String, String> = mutableMapOf()
