@@ -131,10 +131,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
 
                         if (manifestPath.equals(cargoTomlFile.absolutePath, true)) {
                             val array = jsonObject.getAsJsonArray("filenames")
-                            if (array.size() > 1) {
-                                throw RuntimeException("Cannot process more than 1 output.")
-                            }
-                            array.forEach { elem ->
+                            for (elem in array) {
                                 var binPath = elem.asString
                                 if (binPath.startsWith("/project")) {
                                     binPath = binPath.replaceFirst("/project",
@@ -152,6 +149,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                                     }
                                 }
                                 output = file
+                                break
                             }
                         }
                     }
