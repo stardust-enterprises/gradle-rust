@@ -72,7 +72,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
             }
             this.globalArgs.add("+$toolchain")
         }
-        if (this.configuration.release) {
+        if (this.configuration.release.get()) {
             this.globalArgs.add("--release")
         }
         this.configuration.compilerArgs.forEach(this.globalArgs::add)
