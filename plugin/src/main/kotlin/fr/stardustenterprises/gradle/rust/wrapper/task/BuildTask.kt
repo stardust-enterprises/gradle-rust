@@ -15,6 +15,7 @@ import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFile
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.nio.file.Files
 import java.util.stream.Collectors
 import java.util.zip.ZipException
 
@@ -71,7 +72,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
             }
             this.globalArgs.add("+$toolchain")
         }
-        if(this.configuration.release) {
+        if (this.configuration.release) {
             this.globalArgs.add("--release")
         }
         this.configuration.compilerArgs.forEach(this.globalArgs::add)
@@ -81,6 +82,12 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
     }
 
     override fun doTask() {
+        val rustDir = this.project.buildDir.resolve("rust")
+        FileUtils.deleteDirectory(rustDir)
+        rustDir.mkdirs()
+
+        val prenamedDir = rustDir.resolve("prenamed").also(File::mkdirs)
+
         val exportMap = mutableMapOf<String, File>()
 
         val cargoTomlFile =
@@ -163,16 +170,24 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                 }\"")
             }
 
-            exportMap[target.key] = output
+            val newOut = prenamedDir.resolve(target.key)
+                .also(File::mkdirs)
+                .resolve(target.value)
+
+            if (!newOut.exists()) newOut.createNewFile()
+            output.copyTo(newOut, overwrite = true)
+
+            exportMap[target.key] = newOut
         }
 
         writeExports(exportMap)
+
+        FileUtils.deleteDirectory(prenamedDir)
     }
 
     private fun writeExports(map: Map<String, File>) {
         val rustDir = this.project.buildDir.resolve("rust")
-        FileUtils.deleteDirectory(rustDir)
-        rustDir.mkdirs()
+
         val outputDir = rustDir.resolve("outputs")
         outputDir.mkdirs()
 
@@ -228,7 +243,8 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
             targetDir.mkdirs()
             val targetFile = targetDir.resolve(it.value.name)
             if (targetFile.exists()) targetFile.delete()
-            it.value.copyTo(targetFile)
+
+            Files.copy(it.value.toPath(), targetFile.toPath())
         }
 
         val exports = Exports(1, exportsList)
