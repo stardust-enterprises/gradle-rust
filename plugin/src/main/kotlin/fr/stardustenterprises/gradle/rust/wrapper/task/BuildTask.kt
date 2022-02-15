@@ -163,7 +163,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                 }\"")
             }
 
-            exportMap[target.key] = output!!
+            exportMap[target.key] = output
         }
 
         writeExports(exportMap)
