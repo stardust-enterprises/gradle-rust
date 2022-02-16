@@ -1,6 +1,6 @@
 package fr.stardustenterprises.gradle.rust.wrapper
 
-import fr.stardustenterprises.gradle.common.Plugin
+import fr.stardustenterprises.gradle.common.StardustPlugin
 import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
 import fr.stardustenterprises.gradle.rust.wrapper.task.BuildTask
 import fr.stardustenterprises.gradle.rust.wrapper.task.CleanTask
@@ -9,8 +9,8 @@ import fr.stardustenterprises.gradle.rust.wrapper.task.TestTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
 
-class WrapperPlugin : Plugin() {
-    override var pluginId = "fr.stardustenterprises.rust.wrapper"
+class WrapperPlugin : StardustPlugin() {
+    override val pluginId = "fr.stardustenterprises.rust.wrapper"
     private lateinit var wrapperExtension: WrapperExtension
     private lateinit var buildTaskProvider: TaskProvider<out BuildTask>
 

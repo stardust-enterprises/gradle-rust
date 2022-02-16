@@ -1,14 +1,14 @@
 package fr.stardustenterprises.gradle.rust.importer
 
-import fr.stardustenterprises.gradle.common.Plugin
+import fr.stardustenterprises.gradle.common.StardustPlugin
 import fr.stardustenterprises.gradle.rust.importer.ext.ImporterExtension
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.language.jvm.tasks.ProcessResources
 
 
-class ImporterPlugin : Plugin() {
-    override var pluginId = "fr.stardustenterprises.rust.importer"
+class ImporterPlugin : StardustPlugin() {
+    override val pluginId = "fr.stardustenterprises.rust.importer"
 
     private lateinit var configuration: Configuration
     private lateinit var importerExtension: ImporterExtension

@@ -8,11 +8,11 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
 
-abstract class Plugin : Plugin<Project> {
+abstract class StardustPlugin : Plugin<Project> {
     protected lateinit var project: Project
         private set
 
-    abstract var pluginId: String
+    abstract val pluginId: String
 
     private val postHooks = mutableListOf<Runnable>()
 
@@ -37,9 +37,10 @@ abstract class Plugin : Plugin<Project> {
     }
 
     protected fun <T> extension(extensionClass: Class<T>): T {
-        val extensionAnnotation = extensionClass.getDeclaredAnnotation(Extension::class.java) ?: throw RuntimeException(
-            "Extension class missing @Extension annotation!"
-        )
+        val extensionAnnotation = extensionClass.getDeclaredAnnotation(Extension::class.java)
+            ?: throw RuntimeException(
+                "Extension class missing @Extension annotation!"
+            )
 
         return this.project.extensions.create(extensionAnnotation.name, extensionClass)
     }
@@ -55,7 +56,7 @@ abstract class Plugin : Plugin<Project> {
     }
 
     protected fun <T, C : ConfigurableTask<T>> task(
-        configurableTask: Class<out C>, configureBlock: C.() -> Unit
+        configurableTask: Class<out C>, configureBlock: C.() -> Unit,
     ): TaskProvider<out C> {
         val task = this.task(configurableTask)
         this.postHooks.add {

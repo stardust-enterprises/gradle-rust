@@ -13,7 +13,6 @@ import org.tomlj.Toml
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
-
 @Extension("rust")
 abstract class WrapperExtension
 @Inject constructor(
