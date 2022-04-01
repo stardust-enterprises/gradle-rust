@@ -2,11 +2,11 @@ package fr.stardustenterprises.gradle.rust.wrapper.task
 
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
-import fr.stardustenterprises.gradle.common.task.ConfigurableTask
-import fr.stardustenterprises.gradle.common.task.Task
 import fr.stardustenterprises.gradle.rust.data.Exports
 import fr.stardustenterprises.gradle.rust.data.TargetExport
 import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
+import fr.stardustenterprises.stargrad.task.ConfigurableTask
+import fr.stardustenterprises.stargrad.task.Task
 import net.lingala.zip4j.ZipFile
 import org.apache.commons.io.FileUtils
 import org.gradle.api.file.FileCollection
@@ -18,7 +18,6 @@ import java.io.File
 import java.nio.file.Files
 import java.util.stream.Collectors
 import java.util.zip.ZipException
-
 
 @Task(
     group = "rust", name = "build"
@@ -81,7 +80,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         this.exportsZip = rustDir.resolve(EXPORTS_FILE_NAME)
     }
 
-    override fun doTask() {
+    override fun run() {
         val rustDir = this.project.buildDir.resolve("rust")
         FileUtils.deleteDirectory(rustDir)
         rustDir.mkdirs()

@@ -18,6 +18,16 @@ plugins {
 ```
 
 # how to use
+
+```kotlin
+rust {
+    command.set("cargo")
+    
+    // Default target to file declaration
+    targets += "" to ""
+}
+```
+
 check out [this example repository](https://github.com/stardust-enterprises/gradle-rust-example) to learn 
 how to use gradle-rust
 

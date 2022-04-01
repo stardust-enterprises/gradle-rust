@@ -1,7 +1,7 @@
 package fr.stardustenterprises.gradle.rust.wrapper.task.wrap
 
-import fr.stardustenterprises.gradle.common.task.ConfigurableTask
 import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
+import fr.stardustenterprises.stargrad.task.ConfigurableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Internal
@@ -13,7 +13,7 @@ open class WrappedTask(
     protected val command: String
 ) : ConfigurableTask<WrapperExtension>() {
 
-    override fun doTask() {
+    override fun run() {
         configuration.targets.forEach {
             val args = getArguments().toMutableList()
             args.add(0, command)

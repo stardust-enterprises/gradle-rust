@@ -2,13 +2,13 @@
 
 package fr.stardustenterprises.gradle.rust.wrapper.ext
 
-import fr.stardustenterprises.gradle.common.ext.Extension
+import fr.stardustenterprises.stargrad.ext.Extension
+import fr.stardustenterprises.stargrad.ext.StargradExtension
 import org.gradle.api.Project
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
-import org.gradle.api.tasks.Internal
 import org.tomlj.Toml
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
@@ -16,11 +16,8 @@ import javax.inject.Inject
 @Extension("rust")
 abstract class WrapperExtension
 @Inject constructor(
-    val project: Project,
-) {
-    @Internal
-    private val objects = project.objects
-
+    _project: Project,
+) : StargradExtension(_project) {
     @Input
     val command: Property<String> = objects.property(String::class.java)
         .convention("cargo")

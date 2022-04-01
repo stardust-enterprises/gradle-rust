@@ -54,6 +54,8 @@ dependencies {
             implementation("org.jetbrains.kotlin", "kotlin-$it", KOTLIN)
         }
 
+        implementation("fr.stardustenterprises", "stargrad", STARGRAD)
+
         implementation("org.tomlj", "tomlj", TOMLJ)
         implementation("commons-io", "commons-io", COMMONS_IO)
         implementation("com.google.code.gson", "gson", GSON)

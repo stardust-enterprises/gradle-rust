@@ -11,6 +11,7 @@ object Plugins {
 
 object Dependencies {
     const val KOTLIN = kotlinVersion
+    const val STARGRAD = "0.5.2"
     const val TOMLJ = "1.0.0"
     const val COMMONS_IO = "2.11.0"
     const val GSON = "2.8.9"

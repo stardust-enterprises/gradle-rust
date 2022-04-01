@@ -1,14 +1,15 @@
 package fr.stardustenterprises.gradle.rust.importer
 
-import fr.stardustenterprises.gradle.common.StardustPlugin
 import fr.stardustenterprises.gradle.rust.importer.ext.ImporterExtension
-import org.gradle.api.Project
+import fr.stardustenterprises.stargrad.StargradPlugin
 import org.gradle.api.artifacts.Configuration
 import org.gradle.language.jvm.tasks.ProcessResources
 
 
-class ImporterPlugin : StardustPlugin() {
-    override val pluginId = "fr.stardustenterprises.rust.importer"
+class ImporterPlugin : StargradPlugin() {
+    override val id = "fr.stardustenterprises.rust.importer"
+    override val conflictsWith: Set<String> =
+        setOf("fr.stardustenterprises.rust.wrapper")
 
     private lateinit var configuration: Configuration
     private lateinit var importerExtension: ImporterExtension
@@ -18,11 +19,11 @@ class ImporterPlugin : StardustPlugin() {
         this.configuration.isCanBeConsumed = false
         this.configuration.isCanBeResolved = true
 
-        this.importerExtension = extension(ImporterExtension::class.java)
+        this.importerExtension = registerExtension()
     }
 
     @Suppress("UnstableApiUsage")
-    override fun afterEvaluate(project: Project) {
+    override fun afterEvaluate() {
         project.tasks.withType(ProcessResources::class.java)
             .named("processResources")
             .also {
@@ -34,7 +35,4 @@ class ImporterPlugin : StardustPlugin() {
                 ProcessResourcesRust.process(project, importerExtension, baseDir)
             }
     }
-
-    override fun conflictsWithPlugins(): Array<String> =
-        arrayOf("fr.stardustenterprises.rust.wrapper")
 }
