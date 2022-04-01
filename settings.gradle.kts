@@ -1,7 +1,6 @@
+rootProject.name = "gradle-rust"
+
 pluginManagement.repositories {
     mavenLocal()
     gradlePluginPortal()
 }
-
-rootProject.name = "gradle-rust"
-include("plugin")

@@ -52,7 +52,7 @@ abstract class WrapperExtension
 
     private fun getCargoName(): String {
         val cargoTomlFile =
-            crate.file("Cargo.toml").get().asFile ?: throw RuntimeException("Cargo.toml file not found!")
+            crate.file("Cargo.toml").orNull?.asFile ?: throw RuntimeException("Cargo.toml file not found!")
         if (!cargoTomlFile.exists()) throw RuntimeException("Cargo.toml file not found!")
 
         val result = Toml.parse(cargoTomlFile.toPath())

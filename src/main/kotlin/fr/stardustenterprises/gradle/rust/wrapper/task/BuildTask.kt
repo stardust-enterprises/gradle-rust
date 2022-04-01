@@ -62,7 +62,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         this.targets = this.configuration.targets.keys
         this.globalArgs = mutableSetOf()
 
-        val toolchainInput = this.configuration.toolchain.get()
+        val toolchainInput = this.configuration.toolchain.orNull
         if (!toolchainInput.isNullOrBlank()) {
             // Remove a preceding `+`, if present.
             val toolchain: String =
@@ -91,7 +91,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         val exportMap = mutableMapOf<String, File>()
 
         val cargoTomlFile =
-            this.configuration.crate.file("Cargo.toml").get().asFile
+            this.configuration.crate.file("Cargo.toml").orNull?.asFile
                 ?: throw RuntimeException("Cargo.toml file not found!")
 
         val command = this.configuration.command.getOrElse("cargo")
