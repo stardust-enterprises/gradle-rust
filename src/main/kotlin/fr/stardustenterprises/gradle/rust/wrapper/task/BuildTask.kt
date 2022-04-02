@@ -7,6 +7,7 @@ import fr.stardustenterprises.gradle.rust.data.TargetExport
 import fr.stardustenterprises.gradle.rust.wrapper.TargetManager
 import fr.stardustenterprises.gradle.rust.wrapper.TargetOptions
 import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
+import fr.stardustenterprises.plat4k.EnumOperatingSystem
 import fr.stardustenterprises.stargrad.task.ConfigurableTask
 import fr.stardustenterprises.stargrad.task.Task
 import net.lingala.zip4j.ZipFile
@@ -120,6 +121,22 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                 it.standardOutput = stdout
             }.assertNormalExitValue()
         } catch (throwable: Throwable) {
+            if (targetOpt.target!!.lowercase().contains("darwin")) {
+                if (targetOpt.command!!.lowercase().contains("cargo")) {
+                    val current = EnumOperatingSystem.currentOS
+                    if (current != EnumOperatingSystem.MACOS) {
+                        println(
+                            "Error compiling to a darwin target (" +
+                                targetOpt.target + ")."
+                        )
+                        println(
+                            "Ensure your .cargo/config.toml file is " +
+                                "configured properly with osxcross toolchains."
+                        )
+                    }
+                }
+            }
+
             throw RuntimeException(
                 "An error occured while building using command:\n" +
                     targetOpt.command + " " + args.joinToString(" "),
@@ -146,7 +163,8 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                                     it.substring(0, it.length - 1)
                                 else
                                     it
-                            })
+                            }
+                        )
                     }
 
                     if (manifestPath.equals(
@@ -168,7 +186,8 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                                             it.substring(0, it.length - 1)
                                         else
                                             it
-                                    })
+                                    }
+                                )
                             }
 
                             var file = File(binPath)
@@ -244,15 +263,15 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
 
             parsed = parsed.map { data ->
                 var newData = data
-                if (newData.endsWith("hf")
-                    || newData.contains("hardfloat")
+                if (newData.endsWith("hf") ||
+                    newData.contains("hardfloat")
                 ) {
                     newData = newData.replace("hf", "")
                         .replace("hardfloat", "")
                     arch += "hf"
                 }
-                if (newData.endsWith("sf")
-                    || newData.contains("softfloat")
+                if (newData.endsWith("sf") ||
+                    newData.contains("softfloat")
                 ) {
                     newData = newData.replace("sf", "")
                         .replace("softfloat", "")
