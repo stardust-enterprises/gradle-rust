@@ -112,6 +112,19 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         )
 
         val stdout = ByteArrayOutputStream()
+        val target = targetOpt.target!!.lowercase()
+        val command = targetOpt.command!!.lowercase()
+        val currentOS = EnumOperatingSystem.currentOS
+
+        val isOsxCross = target.contains("darwin") &&
+            command.contains("cargo") &&
+            currentOS != EnumOperatingSystem.MACOS
+
+        if (isOsxCross) {
+            targetOpt.env.putIfAbsent("CC", "o64-clang")
+            targetOpt.env.putIfAbsent("CXX", "o64-clang++")
+        }
+
         try {
             this.project.exec {
                 it.commandLine(targetOpt.command)
@@ -121,20 +134,15 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                 it.standardOutput = stdout
             }.assertNormalExitValue()
         } catch (throwable: Throwable) {
-            if (targetOpt.target!!.lowercase().contains("darwin")) {
-                if (targetOpt.command!!.lowercase().contains("cargo")) {
-                    val current = EnumOperatingSystem.currentOS
-                    if (current != EnumOperatingSystem.MACOS) {
-                        println(
-                            "Error compiling to a darwin target (" +
-                                targetOpt.target + ")."
-                        )
-                        println(
-                            "Ensure your .cargo/config.toml file is " +
-                                "configured properly with osxcross toolchains."
-                        )
-                    }
-                }
+            if (isOsxCross) {
+                println(
+                    "Error cross-compiling to a darwin target (" +
+                        targetOpt.target + ")."
+                )
+                println(
+                    "Ensure your .cargo/config.toml file is " +
+                        "configured properly with the osxcross toolchains."
+                )
             }
 
             throw RuntimeException(
