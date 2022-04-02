@@ -5,7 +5,6 @@ import org.gradle.api.Named
 
 data class TargetOptions(
     private val name: String,
-
     var command: String? = null,
     var toolchain: String? = null,
     var target: String? = null,
@@ -14,6 +13,16 @@ data class TargetOptions(
     var args: MutableList<String> = mutableListOf("_DEFAULT"),
     var env: MutableMap<String, String> = mutableMapOf("_DEFAULT" to "DEFAULT"),
 ) : Named {
+    constructor(name: String):
+        this(
+            name,
+            null,
+            null,
+            null,
+            null,
+            null
+        )
+
     /**
      * The object's name.
      *
@@ -24,15 +33,18 @@ data class TargetOptions(
     override fun getName(): String =
         name
 
-    private fun getBaseArguments(): MutableList<String> {
+    fun subcommand(vararg sub: String): List<String> {
+        // cargo [+toolchain] [OPTIONS] [SUBCOMMAND]
         val cmd = mutableListOf<String>()
 
-        if (toolchain!!.isBlank()) {
+        if (!toolchain.isNullOrBlank()) {
             if (!toolchain!!.startsWith('+')) {
                 toolchain = "+$toolchain"
             }
             cmd += toolchain!!
         }
+
+        cmd.addAll(sub)
 
         cmd += "--target=$target"
 
@@ -42,9 +54,6 @@ data class TargetOptions(
 
         return cmd
     }
-
-    fun subcommand(vararg sub: String): List<String> =
-        getBaseArguments().apply { addAll(sub) }
 
     fun populateFrom(configuration: WrapperExtension) {
         if (this.target.isNullOrBlank()) {

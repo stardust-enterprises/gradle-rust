@@ -13,8 +13,6 @@ open class WrappedTask(
     @Throws(ExecException::class)
     override fun run() {
         configuration.targets.forEach { target ->
-            target.populateFrom(configuration)
-
             project.exec {
                 it.commandLine(target.command)
                 it.args(target.subcommand(command))

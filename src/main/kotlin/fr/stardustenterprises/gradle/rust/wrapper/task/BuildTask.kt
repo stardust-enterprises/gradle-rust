@@ -5,6 +5,7 @@ import com.google.gson.JsonObject
 import fr.stardustenterprises.gradle.rust.data.Exports
 import fr.stardustenterprises.gradle.rust.data.TargetExport
 import fr.stardustenterprises.gradle.rust.wrapper.TargetOptions
+import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
 import fr.stardustenterprises.stargrad.task.ConfigurableTask
 import fr.stardustenterprises.stargrad.task.Task
 import net.lingala.zip4j.ZipFile
@@ -16,13 +17,14 @@ import org.gradle.api.tasks.OutputFile
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.nio.file.Files
+import java.util.*
 import java.util.stream.Collectors
 import java.util.zip.ZipException
 
 @Task(
     group = "rust", name = "build"
 )
-open class BuildTask : ConfigurableTask<OldWrapperExtension>() {
+open class BuildTask : ConfigurableTask<WrapperExtension>() {
     companion object {
         private const val EXPORTS_FILE_NAME =
             "_fr_stardustenterprises_gradle_rust_exports.zip"
@@ -37,12 +39,11 @@ open class BuildTask : ConfigurableTask<OldWrapperExtension>() {
 
     @InputFiles
     lateinit var inputFiles: FileCollection
+        private set
 
     @Input
-    lateinit var targets: Set<String>
-
-    @Input
-    lateinit var globalArgs: MutableSet<String>
+    var targetsHash: Int = -1
+        private set
 
     @OutputFile
     lateinit var exportsZip: File
@@ -53,139 +54,153 @@ open class BuildTask : ConfigurableTask<OldWrapperExtension>() {
 
         this.inputFiles = project.files()
 
-        this.workingDir.listFiles { f -> f.name.endsWith(".toml") }?.forEach {
-            this.inputFiles = this.inputFiles.plus(this.project.fileTree(it))
-        }
-        this.inputFiles = this.inputFiles.plus(this.project.fileTree(this.workingDir.resolve("src")))
+        this.workingDir.listFiles { f -> f.name.endsWith(".toml") }
+            ?.forEach { this.inputFiles += this.project.fileTree(it) }
+        this.inputFiles += this.project.fileTree(
+            this.workingDir.resolve("src")
+        )
 
-        this.targets = this.configuration.targets.names
-        this.globalArgs = mutableSetOf()
-
-        val toolchainInput = this.configuration.toolchain.orNull
-        if (!toolchainInput.isNullOrBlank()) {
-            // Remove a preceding `+`, if present.
-            val toolchain: String =
-                if (toolchainInput.startsWith("+")) toolchainInput.substring(1) else toolchainInput
-            if (toolchain.isEmpty()) {
-                throw RuntimeException("Toolchain cannot be empty")
-            }
-            this.globalArgs.add("+$toolchain")
-        }
-        if (this.configuration.release.get()) {
-            this.globalArgs.add("--release")
-        }
-        this.configuration.compilerArgs.forEach(this.globalArgs::add)
+        this.targetsHash = Objects.hash(
+            *this.configuration.targets.toList().toTypedArray()
+        )
 
         val rustDir = this.project.buildDir.resolve("rust")
         this.exportsZip = rustDir.resolve(EXPORTS_FILE_NAME)
     }
 
     override fun run() {
+        if (configuration.targets.isEmpty()) {
+            throw RuntimeException("Please define at least one target.")
+        }
+
         val rustDir = this.project.buildDir.resolve("rust")
         FileUtils.deleteDirectory(rustDir)
         rustDir.mkdirs()
 
-        val prenamedDir = rustDir.resolve("prenamed").also(File::mkdirs)
-
+        val tmpDir = rustDir.resolve("temp").also(File::mkdirs)
         val exportMap = mutableMapOf<String, File>()
 
         val cargoTomlFile =
             this.configuration.crate.file("Cargo.toml").orNull?.asFile
                 ?: throw RuntimeException("Cargo.toml file not found!")
 
-        val command = this.configuration.command.getOrElse("cargo")
+        this.configuration.targets.forEach { targetOptions ->
+            println(
+                "Building \"%s\" for target \"%s\""
+                    .format(targetOptions.name, targetOptions.target)
+            )
 
-        this.configuration.targets.forEach { target ->
-            val args = mutableListOf("build", "--message-format=json")
-
-            if (!target.platform.isNullOrBlank()) {
-                args += "--target=${target.platform}"
-                println("Building for target \"${target.platform}\"")
-            } else {
-                println("Building for default target...")
-            }
-
-            this.globalArgs.forEach(args::add)
-
-            val stdout = ByteArrayOutputStream()
-            this.project.exec {
-                it.commandLine(command)
-                it.args(args)
-                it.workingDir(this.workingDir)
-                it.environment(this.configuration.environment)
-                it.standardOutput = stdout
-            }.assertNormalExitValue()
-
-            var output: File? = null
-
-            for (str in stdout.toString().trim().split("\n")) {
-                try {
-                    val jsonStr = str.trim()
-
-                    val jsonObject = json.fromJson(jsonStr, JsonObject::class.java)
-                    val reason = jsonObject.get("reason").asString
-                    if (reason.equals("compiler-artifact", true)) {
-                        var manifestPath = jsonObject.get("manifest_path").asString
-
-                        if (manifestPath.startsWith("/project")) {
-                            manifestPath = manifestPath.replaceFirst("/project",
-                                project.projectDir.absolutePath.let {
-                                    if (it.endsWith(File.separatorChar)) it.substring(0,
-                                        it.length - 1) else it
-                                })
-                        }
-
-                        if (manifestPath.equals(cargoTomlFile.absolutePath, true)) {
-                            val array = jsonObject.getAsJsonArray("filenames")
-                            for (elem in array) {
-                                var binPath = elem.asString
-                                if (binPath.startsWith("/project")) {
-                                    binPath = binPath.replaceFirst("/project",
-                                        project.projectDir.absolutePath.let {
-                                            if (it.endsWith(File.separatorChar)) it.substring(0,
-                                                it.length - 1) else it
-                                        })
-                                }
-
-                                var file = File(binPath)
-                                if (!file.exists()) {
-                                    file = File(project.projectDir, binPath)
-                                    if (!file.exists()) {
-                                        throw RuntimeException("Cannot find output file!")
-                                    }
-                                }
-                                output = file
-                                break
-                            }
-                        }
-                    }
-                } catch (_: Throwable) {
-                }
-            }
-
-            if (output == null) {
-                throw RuntimeException("Didn't find the output file... report this.\nCommand: \"$command ${
-                    args.joinToString(" ")
-                }\"")
-            }
-
-            val newOut = prenamedDir.resolve(target.platform!!)
-                .also(File::mkdirs)
-                .resolve(target.outputName!!)
-
-            if (!newOut.exists()) newOut.createNewFile()
-            output.copyTo(newOut, overwrite = true)
-
-            exportMap[target.platform!!] = newOut
+            exportMap[targetOptions.target!!] =
+                build(targetOptions, tmpDir, cargoTomlFile)
         }
 
         writeExports(exportMap)
-
-        FileUtils.deleteDirectory(prenamedDir)
+        FileUtils.deleteDirectory(tmpDir)
     }
 
-    private fun build(options: TargetOptions) {
+    private fun build(
+        targetOpt: TargetOptions,
+        tmpDir: File,
+        cargoToml: File,
+    ): File {
+        val args = targetOpt.subcommand(
+            "build", "--message-format=json"
+        )
 
+        val stdout = ByteArrayOutputStream()
+        try {
+            this.project.exec {
+                it.commandLine(targetOpt.command)
+                it.args(args)
+                it.workingDir(this.workingDir)
+                it.environment(targetOpt.env)
+                it.standardOutput = stdout
+            }.assertNormalExitValue()
+        } catch (throwable: Throwable) {
+            throw RuntimeException(
+                "An error occured while building using command:\n" +
+                    targetOpt.command + " " + args.joinToString(" "),
+                throwable
+            )
+        }
+
+        var output: File? = null
+
+        for (str in stdout.toString().trim().split("\n")) {
+            try {
+                val jsonStr = str.trim()
+
+                val jsonObject = json.fromJson(jsonStr, JsonObject::class.java)
+                val reason = jsonObject.get("reason").asString
+                if (reason.equals("compiler-artifact", true)) {
+                    var manifestPath = jsonObject.get("manifest_path").asString
+
+                    if (manifestPath.startsWith("/project")) {
+                        manifestPath = manifestPath.replaceFirst(
+                            "/project",
+                            project.projectDir.absolutePath.let {
+                                if (it.endsWith(File.separatorChar))
+                                    it.substring(0, it.length - 1)
+                                else
+                                    it
+                            })
+                    }
+
+                    if (manifestPath.equals(
+                            cargoToml.absolutePath,
+                            true
+                        )
+                    ) {
+                        val array = jsonObject.getAsJsonArray(
+                            "filenames"
+                        )
+
+                        for (elem in array) {
+                            var binPath = elem.asString
+                            if (binPath.startsWith("/project")) {
+                                binPath = binPath.replaceFirst(
+                                    "/project",
+                                    project.projectDir.absolutePath.let {
+                                        if (it.endsWith(File.separatorChar))
+                                            it.substring(0, it.length - 1)
+                                        else
+                                            it
+                                    })
+                            }
+
+                            var file = File(binPath)
+                            if (!file.exists()) {
+                                file = File(project.projectDir, binPath)
+                                if (!file.exists()) {
+                                    throw RuntimeException(
+                                        "Cannot find output file!"
+                                    )
+                                }
+                            }
+                            output = file
+                            break
+                        }
+                    }
+                }
+            } catch (_: Throwable) {
+            }
+        }
+
+        if (output == null) {
+            throw RuntimeException(
+                "Didn't find the output file... report this.\nCommand: " +
+                    targetOpt.command + " " + args.joinToString(" ")
+            )
+        }
+
+        val newOut = tmpDir.resolve(targetOpt.target!!)
+            .also(File::mkdirs)
+            .resolve(targetOpt.outputName!!)
+
+        if (!newOut.exists()) newOut.createNewFile()
+        output.copyTo(newOut, overwrite = true)
+
+        return newOut
     }
 
     private fun writeExports(map: Map<String, File>) {
@@ -199,45 +214,52 @@ open class BuildTask : ConfigurableTask<OldWrapperExtension>() {
         val exportsList = mutableListOf<TargetExport>()
 
         val skipTags = arrayOf(
-            "unknown", "pc", "sun", "nvidia", "gnu", "msvc", "none", "elf", "wasi", "uwp"
+            "unknown", "pc", "sun", "nvidia", "gnu",
+            "msvc", "none", "elf", "wasi", "uwp",
         ) // does eabi/abi(64) belong in there?
 
         val skipSecondTags = arrayOf("apple", "linux")
 
         map.forEach {
-            var parsedData = it.key.split('-').toMutableList()
+            var parsed = it.key.split('-').toMutableList()
 
-            if (skipSecondTags.contains(parsedData[1])) {
-                parsedData.removeAt(1)
+            if (skipSecondTags.contains(parsed[1])) {
+                parsed.removeAt(1)
             }
 
-            var arch = parsedData[0]
-            parsedData.removeAt(0)
+            var arch = parsed[0]
+            parsed.removeAt(0)
 
-            parsedData = parsedData.map { data ->
+            parsed = parsed.map { data ->
                 var newData = data
                 skipTags.forEach { skip ->
                     newData = newData.replace(skip, "")
                 }
                 newData
             }.toMutableList()
-            parsedData.filter(String::isEmpty).forEach(parsedData::remove)
+            parsed.filter(String::isEmpty).forEach(parsed::remove)
 
-            parsedData = parsedData.map { data ->
+            parsed = parsed.map { data ->
                 var newData = data
-                if (newData.endsWith("hf") || newData.contains("hardfloat")) {
-                    newData = newData.replace("hf", "").replace("hardfloat", "")
+                if (newData.endsWith("hf")
+                    || newData.contains("hardfloat")
+                ) {
+                    newData = newData.replace("hf", "")
+                        .replace("hardfloat", "")
                     arch += "hf"
                 }
-                if (newData.endsWith("sf") || newData.contains("softfloat")) {
-                    newData = newData.replace("sf", "").replace("softfloat", "")
+                if (newData.endsWith("sf")
+                    || newData.contains("softfloat")
+                ) {
+                    newData = newData.replace("sf", "")
+                        .replace("softfloat", "")
                     arch += "sf"
                 }
                 newData
             }.toMutableList()
-            parsedData.filter(String::isEmpty).forEach(parsedData::remove)
+            parsed.filter(String::isEmpty).forEach(parsed::remove)
 
-            var os = parsedData.stream().collect(Collectors.joining("-"))
+            var os = parsed.stream().collect(Collectors.joining("-"))
             if (os.isEmpty()) os = "unknown"
 
             exportsList += TargetExport(os, arch, it.key, it.value.name)
@@ -253,7 +275,8 @@ open class BuildTask : ConfigurableTask<OldWrapperExtension>() {
         val exports = Exports(1, exportsList)
         exportsFile.writeText(json.toJson(exports))
 
-        val files: Array<File> = outputDir.listFiles() ?: throw RuntimeException("No outputs >.>")
+        val files: Array<File> = outputDir.listFiles()
+            ?: throw RuntimeException("No outputs >.>")
 
         if (this.exportsZip.exists()) {
             this.exportsZip.delete()
