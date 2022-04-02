@@ -28,6 +28,14 @@ abstract class WrapperExtension
     val targets: NamedDomainObjectContainer<TargetOptions> =
         WrapperPlugin.targetContainer
 
+    @Input
+    val rustupCommand: Property<String> = objects.property(String::class.java)
+        .convention("rustup")
+
+    @Input
+    val cargoInstallTargets: Property<Boolean> =
+        objects.property(Boolean::class.java).convention(false)
+
     // Global Properties
 
     @Input
@@ -80,9 +88,9 @@ abstract class WrapperExtension
             .replace('\n', ' ').trim()
 
         // stable-, naughty-
-        if (targetOutput.startsWith("stable-")
-            || targetOutput.startsWith("naughty-")
-            || targetOutput.startsWith("beta-")
+        if (targetOutput.startsWith("stable-") ||
+            targetOutput.startsWith("naughty-") ||
+            targetOutput.startsWith("beta-")
         ) {
             targetOutput = targetOutput.substring(
                 targetOutput.indexOfFirst { it == '-' } + 1
@@ -94,13 +102,18 @@ abstract class WrapperExtension
             .filter(String::isNotEmpty)
             .joinToString("-")
 
-        TargetOptions(
-            "default",
-            outputName = System.mapLibraryName(cargoName),
+        TargetOptions("default").apply {
+            outputName = System.mapLibraryName(cargoName)
             target = targetOutput
-        )
+        }
     }
 
     fun defaultTarget(): TargetOptions =
         _defaultTarget
+
+    fun target(target: String, outputName: String): TargetOptions =
+        TargetOptions(target).apply {
+            this.target = target
+            this.outputName = outputName
+        }
 }
