@@ -5,7 +5,6 @@ import fr.stardustenterprises.stargrad.StargradPlugin
 import org.gradle.api.artifacts.Configuration
 import org.gradle.language.jvm.tasks.ProcessResources
 
-
 class ImporterPlugin : StargradPlugin() {
     override val id = "fr.stardustenterprises.rust.importer"
     override val conflictsWith: Set<String> =

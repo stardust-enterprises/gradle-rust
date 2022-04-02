@@ -13,7 +13,7 @@ import javax.inject.Inject
 abstract class ImporterExtension
 @Inject constructor(
     _project: Project
-): StargradExtension(_project) {
+) : StargradExtension(_project) {
     @Input
     val baseDir: Property<String> = objects.property(String::class.java)
         .convention("/META-INF/natives/")

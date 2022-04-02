@@ -25,14 +25,15 @@ class HierarchicalLayout : ILayout {
         targetName: String,
     ): String =
         root +
-                (if (root.endsWith(File.separator)) "" else File.separator) +
-                osName +
-                File.separator +
-                (if (archName.isNotEmpty()) {
-                    archName +
-                            File.separator
-                } else "") +
-                targetName
+            (if (root.endsWith(File.separator)) "" else File.separator) +
+            osName +
+            File.separator + (
+            if (archName.isNotEmpty())
+                archName + File.separator
+            else
+                ""
+            ) +
+            targetName
 }
 
 class FlatLayout : ILayout {
@@ -43,7 +44,6 @@ class FlatLayout : ILayout {
         targetName: String,
     ): String =
         root +
-                (if (root.endsWith(File.separator)) "" else File.separator) +
-                targetName
-
+            (if (root.endsWith(File.separator)) "" else File.separator) +
+            targetName
 }
