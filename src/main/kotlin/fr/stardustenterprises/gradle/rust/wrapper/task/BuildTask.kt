@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import fr.stardustenterprises.gradle.rust.data.Exports
 import fr.stardustenterprises.gradle.rust.data.TargetExport
+import fr.stardustenterprises.gradle.rust.wrapper.TargetManager
 import fr.stardustenterprises.gradle.rust.wrapper.TargetOptions
 import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
 import fr.stardustenterprises.stargrad.task.ConfigurableTask
@@ -72,6 +73,8 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         if (configuration.targets.isEmpty()) {
             throw RuntimeException("Please define at least one target.")
         }
+
+        TargetManager.ensureTargetsInstalled(project, configuration)
 
         val rustDir = this.project.buildDir.resolve("rust")
         FileUtils.deleteDirectory(rustDir)

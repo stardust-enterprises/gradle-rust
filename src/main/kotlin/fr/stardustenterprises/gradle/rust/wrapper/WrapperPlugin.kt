@@ -8,7 +8,6 @@ import fr.stardustenterprises.gradle.rust.wrapper.task.TestTask
 import fr.stardustenterprises.stargrad.StargradPlugin
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.tasks.TaskProvider
-import java.io.ByteArrayOutputStream
 
 class WrapperPlugin : StargradPlugin() {
     companion object {
@@ -39,44 +38,5 @@ class WrapperPlugin : StargradPlugin() {
             target.populateFrom(wrapperExtension)
         }
         project.artifacts.add("default", this.buildTaskProvider)
-
-        if (!wrapperExtension.cargoInstallTargets.get()) {
-            return
-        }
-        println("(gradle-rust/experimental) Target auto-install is enabled...")
-
-        val rustupCommand = wrapperExtension.rustupCommand.get()
-
-        val stdout = ByteArrayOutputStream()
-        project.exec { exec ->
-            exec.commandLine(rustupCommand)
-            exec.args("target", "list", "--installed")
-            exec.workingDir(wrapperExtension.crate.get().asFile)
-            exec.environment(wrapperExtension.env)
-            exec.standardOutput = stdout
-        }.assertNormalExitValue()
-
-        val installed = stdout.toString().split("\n")
-            .toMutableList()
-            .also { it.removeIf(String::isNullOrBlank) }
-
-        wrapperExtension.targets.forEach { targetOptions ->
-            if (installed.contains(targetOptions.target)) {
-                return@forEach
-            }
-            println("Installing target \"${targetOptions.target}\" via rustup.")
-
-            val command = targetOptions.command!!.lowercase()
-            if (command.contains("cargo") &&
-                !command.contains("cross")
-            ) {
-                project.exec { exec ->
-                    exec.commandLine(rustupCommand)
-                    exec.args("target", "add", targetOptions.target)
-                    exec.workingDir(wrapperExtension.crate.get().asFile)
-                    exec.environment(wrapperExtension.env)
-                }.assertNormalExitValue()
-            }
-        }
     }
 }

@@ -1,5 +1,6 @@
 package fr.stardustenterprises.gradle.rust.wrapper.task
 
+import fr.stardustenterprises.gradle.rust.wrapper.TargetManager
 import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
 import fr.stardustenterprises.stargrad.task.ConfigurableTask
 import org.gradle.api.tasks.Internal
@@ -12,6 +13,8 @@ open class WrappedTask(
 
     @Throws(ExecException::class)
     override fun run() {
+        TargetManager.ensureTargetsInstalled(project, configuration)
+
         configuration.targets.forEach { target ->
             project.exec {
                 it.commandLine(target.command)
