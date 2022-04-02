@@ -55,6 +55,7 @@ dependencies {
         }
 
         implementation("fr.stardustenterprises", "stargrad", STARGRAD)
+        implementation("fr.stardustenterprises", "plat4k", PLAT4K)
 
         implementation("org.tomlj", "tomlj", TOMLJ)
         implementation("commons-io", "commons-io", COMMONS_IO)
