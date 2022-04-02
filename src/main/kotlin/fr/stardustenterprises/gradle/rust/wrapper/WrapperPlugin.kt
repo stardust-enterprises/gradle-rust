@@ -22,7 +22,6 @@ class WrapperPlugin : StargradPlugin() {
     private lateinit var buildTaskProvider: TaskProvider<out BuildTask>
 
     override fun applyPlugin() {
-        // this is beyond ugly
         targetContainer = project.container(TargetOptions::class.java)
 
         project.configurations.create("default")
