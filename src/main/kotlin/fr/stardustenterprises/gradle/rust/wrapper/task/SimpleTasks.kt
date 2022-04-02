@@ -1,7 +1,5 @@
 package fr.stardustenterprises.gradle.rust.wrapper.task
 
-import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
-import fr.stardustenterprises.gradle.rust.wrapper.task.wrap.WrappedTask
 import fr.stardustenterprises.stargrad.task.ConfigurableTask
 import fr.stardustenterprises.stargrad.task.Task
 import org.apache.commons.io.FileUtils
@@ -13,7 +11,7 @@ open class TestTask : WrappedTask("test")
 open class RunTask : WrappedTask("run")
 
 @Task(group = "rust", name = "clean")
-open class CleanTask : ConfigurableTask<WrapperExtension>() {
+open class CleanTask : ConfigurableTask<OldWrapperExtension>() {
     override fun run() {
         val workingDir = this.configuration.crate.asFile.getOrElse(this.project.projectDir)
 

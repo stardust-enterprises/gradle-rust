@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import fr.stardustenterprises.gradle.rust.data.Exports
 import fr.stardustenterprises.gradle.rust.data.TargetExport
-import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
+import fr.stardustenterprises.gradle.rust.wrapper.TargetOptions
 import fr.stardustenterprises.stargrad.task.ConfigurableTask
 import fr.stardustenterprises.stargrad.task.Task
 import net.lingala.zip4j.ZipFile
@@ -22,7 +22,7 @@ import java.util.zip.ZipException
 @Task(
     group = "rust", name = "build"
 )
-open class BuildTask : ConfigurableTask<WrapperExtension>() {
+open class BuildTask : ConfigurableTask<OldWrapperExtension>() {
     companion object {
         private const val EXPORTS_FILE_NAME =
             "_fr_stardustenterprises_gradle_rust_exports.zip"
@@ -58,7 +58,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         }
         this.inputFiles = this.inputFiles.plus(this.project.fileTree(this.workingDir.resolve("src")))
 
-        this.targets = this.configuration.targets.keys
+        this.targets = this.configuration.targets.names
         this.globalArgs = mutableSetOf()
 
         val toolchainInput = this.configuration.toolchain.orNull
@@ -98,9 +98,9 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         this.configuration.targets.forEach { target ->
             val args = mutableListOf("build", "--message-format=json")
 
-            if (target.key.isNotEmpty()) {
-                args += "--target=${target.key}"
-                println("Building for target \"${target.key}\"")
+            if (!target.platform.isNullOrBlank()) {
+                args += "--target=${target.platform}"
+                println("Building for target \"${target.platform}\"")
             } else {
                 println("Building for default target...")
             }
@@ -169,19 +169,23 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                 }\"")
             }
 
-            val newOut = prenamedDir.resolve(target.key)
+            val newOut = prenamedDir.resolve(target.platform!!)
                 .also(File::mkdirs)
-                .resolve(target.value)
+                .resolve(target.outputName!!)
 
             if (!newOut.exists()) newOut.createNewFile()
             output.copyTo(newOut, overwrite = true)
 
-            exportMap[target.key] = newOut
+            exportMap[target.platform!!] = newOut
         }
 
         writeExports(exportMap)
 
         FileUtils.deleteDirectory(prenamedDir)
+    }
+
+    private fun build(options: TargetOptions) {
+
     }
 
     private fun writeExports(map: Map<String, File>) {
