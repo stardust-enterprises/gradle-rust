@@ -1,5 +1,6 @@
 package fr.stardustenterprises.gradle.rust.wrapper
 
+import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
 import fr.stardustenterprises.gradle.rust.wrapper.task.BuildTask
 import fr.stardustenterprises.gradle.rust.wrapper.task.CleanTask
 import fr.stardustenterprises.gradle.rust.wrapper.task.RunTask
@@ -17,7 +18,7 @@ class WrapperPlugin : StargradPlugin() {
     override val conflictsWith: Set<String> =
         setOf("fr.stardustenterprises.rust.importer", "java")
 
-    private lateinit var wrapperExtension: OldWrapperExtension
+    private lateinit var wrapperExtension: WrapperExtension
     private lateinit var buildTaskProvider: TaskProvider<out BuildTask>
 
     override fun applyPlugin() {
@@ -34,9 +35,10 @@ class WrapperPlugin : StargradPlugin() {
     }
 
     override fun afterEvaluate() {
-        if (wrapperExtension.targets.isEmpty()) {
+        // disabled for testing (for now)
+//        if (wrapperExtension.targets.isEmpty()) {
 //            throw RuntimeException("Please define a target platform.")
-        }
+//        }
 
         project.artifacts.add("default", this.buildTaskProvider)
     }
