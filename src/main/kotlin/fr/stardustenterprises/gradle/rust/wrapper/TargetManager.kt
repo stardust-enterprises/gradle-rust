@@ -18,7 +18,6 @@ object TargetManager {
         project: Project,
         wrapperExtension: WrapperExtension,
     ) {
-        println("(gradle-rust/experimental) Target auto-install is enabled.")
         val rustupCommand = wrapperExtension.rustupCommand.get()
 
         val stdout = ByteArrayOutputStream()
