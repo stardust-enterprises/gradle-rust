@@ -1,10 +1,7 @@
 package fr.stardustenterprises.gradle.rust.wrapper
 
 import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
-import fr.stardustenterprises.gradle.rust.wrapper.task.BuildTask
-import fr.stardustenterprises.gradle.rust.wrapper.task.CleanTask
-import fr.stardustenterprises.gradle.rust.wrapper.task.RunTask
-import fr.stardustenterprises.gradle.rust.wrapper.task.TestTask
+import fr.stardustenterprises.gradle.rust.wrapper.task.*
 import fr.stardustenterprises.stargrad.StargradPlugin
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.tasks.TaskProvider
