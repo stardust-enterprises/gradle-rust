@@ -120,11 +120,6 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
             command.contains("cargo") &&
             currentOS != EnumOperatingSystem.MACOS
 
-        if (isOsxCross) {
-            targetOpt.env.putIfAbsent("CC", "o64-clang")
-            targetOpt.env.putIfAbsent("CXX", "o64-clang++")
-        }
-
         try {
             this.project.exec {
                 it.commandLine(targetOpt.command)
