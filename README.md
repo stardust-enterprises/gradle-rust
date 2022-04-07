@@ -3,14 +3,9 @@ a plugin for inter-compatibility with [rust][rust]
 inside [gradle][gradle] projects.
 
 ## how to use
-check out this [example repository][example] to learn how to use gradle-rust
-
-## todo
-- use NamedDomainObjectContainer to better the target declaration syntax (?)
+check out this [example repository][example] to learn how to use gradle-rust.
 
 ## contributing
-**please note**: this branch of the project is currently under heavy development.
-
 you can contribute by [forking the repository][fork], making your changes and [creating a new pull request][new-pr]
 describing what you changed, why and how.
 
