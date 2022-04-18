@@ -1,7 +1,5 @@
-# gradle-rust
+# gradle-rust [![Build][badge-github-ci]][project-gradle-ci] [![Maven Central][badge-mvnc]][project-mvnc]
 
-[![Build][badge-github-ci]][project-gradle-ci]
-[![Maven Central][badge-mvnc]][project-mvnc]
 a plugin for inter-compatibility with [rust][rust] inside [gradle][gradle] projects.
 
 # importing
