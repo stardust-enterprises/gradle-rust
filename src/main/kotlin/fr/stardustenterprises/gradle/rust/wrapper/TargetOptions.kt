@@ -13,7 +13,7 @@ data class TargetOptions(
     var args: MutableList<String> = mutableListOf("_DEFAULT"),
     var env: MutableMap<String, String> = mutableMapOf("_DEFAULT" to "DEFAULT"),
 ) : Named {
-    constructor(name: String):
+    constructor(name: String) :
         this(
             name,
             null,

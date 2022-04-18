@@ -26,8 +26,11 @@ object ProcessResourcesRust {
         baseDir: File,
     ) {
         val layout = LAYOUT_REGISTRY[configuration.layout.get()]
-            ?: throw RuntimeException("Invalid layout. " +
-                    "(${LAYOUT_REGISTRY.keys})")
+            ?: throw RuntimeException(
+                "Invalid layout. (" +
+                    LAYOUT_REGISTRY.keys +
+                    ")"
+            )
 
         val rustImportDir = project.buildDir.resolve("rustImport")
         FileUtils.deleteDirectory(rustImportDir)
