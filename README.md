@@ -11,6 +11,7 @@ plugins {
     id("fr.stardustenterprises.rust.wrapper") version "3.2.1"
 }
 ```
+
 # how to use
 
 check out [this example repository](https://github.com/stardust-enterprises/gradle-rust-example) to learn in detail
@@ -35,21 +36,35 @@ this project is under the [ISC license][project-license].
 <!-- Links -->
 
 [jvm]: https://adoptium.net "adoptium website"
+
 [kotlin]: https://kotlinlang.org "kotlin website"
+
 [gradle]: https://gradle.org "gradle website"
+
 [rust]: https://rust-lang.org "rust website"
+
 [mvnc]: https://repo1.maven.org/maven2/ "maven central website"
+
 [gpp]: https://plugins.gradle.org/ "gradle plugin portal website"
+
 <!-- Project Links -->
 
 [project-url]: https://github.com/stardust-enterprises/gradle-rust "project github repository"
+
 [fork]: https://github.com/stardust-enterprises/gradle-rust/fork "fork this repository"
+
 [new-pr]: https://github.com/stardust-enterprises/gradle-rust/pulls/new "create a new pull request"
+
 [new-issue]: https://github.com/stardust-enterprises/gradle-rust/issues/new "create a new issue"
+
 [project-mvnc]: https://maven-badges.herokuapp.com/maven-central/fr.stardustenterprises/gradle-rust "maven central repository"
+
 [project-gradle-ci]: https://github.com/stardust-enterprises/gradle-rust/actions/workflows/gradle-ci.yml "gradle ci workflow"
+
 [project-license]: https://github.com/stardust-enterprises/gradle-rust/blob/trunk/LICENSE "LICENSE source file"
+
 <!-- Badges -->
 
 [badge-mvnc]: https://maven-badges.herokuapp.com/maven-central/fr.stardustenterprises/gradle-rust/badge.svg "maven central badge"
+
 [badge-github-ci]: https://github.com/stardust-enterprises/gradle-rust/actions/workflows/build.yml/badge.svg?branch=trunk "github actions badge"
