@@ -8,8 +8,6 @@ a plugin for inter-compatibility with [rust][rust] inside [gradle][gradle] proje
 
 you can import [gradle-rust][project-url] from [gradle's plugin portal][gpp] just by adding it to your `plugins` block:
 
-## gradle
-
 ```kotlin
 plugins {
     id("fr.stardustenterprises.rust.wrapper") version "3.2.1"
