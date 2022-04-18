@@ -20,6 +20,5 @@ open class CleanTask : ConfigurableTask<WrapperExtension>() {
 
         deleteDirectory(workingDir.resolve("target"))
         deleteDirectory(this.project.projectDir.resolve("build"))
-
     }
 }
