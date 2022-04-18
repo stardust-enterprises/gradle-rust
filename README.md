@@ -13,22 +13,13 @@ you can import [gradle-rust][project-url] from [gradle's plugin portal][gpp] jus
 
 ```kotlin
 plugins {
-    id("fr.stardustenterprises.rust.wrapper") version "{VERSION}"
+    id("fr.stardustenterprises.rust.wrapper") version "3.2.1"
 }
 ```
 
 # how to use
 
-```kotlin
-rust {
-    command.set("cargo")
-    
-    // Default target to file declaration
-    targets += "" to ""
-}
-```
-
-check out [this example repository](https://github.com/stardust-enterprises/gradle-rust-example) to learn 
+check out [this example repository](https://github.com/stardust-enterprises/gradle-rust-example) to learn in detail
 how to use gradle-rust
 
 # troubleshooting
@@ -58,6 +49,8 @@ this project is under the [ISC license][project-license].
 [rust]: https://rust-lang.org "rust website"
 
 [mvnc]: https://repo1.maven.org/maven2/ "maven central website"
+
+[gpp]: https://plugins.gradle.org/ "gradle plugin portal website"
 
 <!-- Project Links -->
 
