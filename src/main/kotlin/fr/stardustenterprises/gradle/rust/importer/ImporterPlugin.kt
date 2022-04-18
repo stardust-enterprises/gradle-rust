@@ -1,5 +1,6 @@
 package fr.stardustenterprises.gradle.rust.importer
 
+import fr.stardustenterprises.gradle.rust.importer.ProcessResourcesRust.process
 import fr.stardustenterprises.gradle.rust.importer.ext.ImporterExtension
 import fr.stardustenterprises.stargrad.StargradPlugin
 import org.gradle.api.artifacts.Configuration
@@ -31,7 +32,7 @@ class ImporterPlugin : StargradPlugin() {
                 }
             }.get().doLast {
                 val baseDir = (it as ProcessResources).destinationDir
-                ProcessResourcesRust.process(project, importerExtension, baseDir)
+                process(project, importerExtension, baseDir)
             }
     }
 }

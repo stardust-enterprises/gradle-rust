@@ -40,7 +40,10 @@ object ProcessResourcesRust {
             if (!it.exists()) throw RuntimeException("Exports zip not found!")
         }
 
-        val exportsDir = rustImportDir.resolve("exports").also(File::mkdirs)
+        val exportsDir = rustImportDir
+            .resolve("exports")
+            .also(File::mkdirs)
+
         ZipFile(exportsZip).extractAll(exportsDir.absolutePath)
 
         val exportsFile = exportsDir.resolve("exports.json").also {

@@ -52,7 +52,9 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         private set
 
     override fun applyConfiguration() {
-        this.workingDir = this.configuration.crate.asFile.getOrElse(this.project.projectDir)
+        this.workingDir = this.configuration.crate.asFile.getOrElse(
+            this.project.projectDir
+        )
 
         this.inputFiles = project.files()
 
