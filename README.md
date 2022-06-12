@@ -1,4 +1,4 @@
-# gradle-rust [![Build][badge-github-ci]][project-gradle-ci] [![Maven Central][badge-mvnc]][project-mvnc]
+# gradle-rust [![Build][badge-github-ci]][project-gradle-ci] 
 
 a plugin for inter-compatibility with [rust][rust] inside [gradle][gradle] projects.
 
@@ -57,14 +57,10 @@ this project is under the [ISC license][project-license].
 
 [new-issue]: https://github.com/stardust-enterprises/gradle-rust/issues/new "create a new issue"
 
-[project-mvnc]: https://maven-badges.herokuapp.com/maven-central/fr.stardustenterprises/gradle-rust "maven central repository"
-
 [project-gradle-ci]: https://github.com/stardust-enterprises/gradle-rust/actions/workflows/gradle-ci.yml "gradle ci workflow"
 
 [project-license]: https://github.com/stardust-enterprises/gradle-rust/blob/trunk/LICENSE "LICENSE source file"
 
 <!-- Badges -->
-
-[badge-mvnc]: https://maven-badges.herokuapp.com/maven-central/fr.stardustenterprises/gradle-rust/badge.svg "maven central badge"
 
 [badge-github-ci]: https://github.com/stardust-enterprises/gradle-rust/actions/workflows/build.yml/badge.svg?branch=trunk "github actions badge"
