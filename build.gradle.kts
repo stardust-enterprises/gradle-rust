@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_VARIABLE")
-
 import java.net.URL
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
@@ -12,9 +10,6 @@ plugins {
 
         // Git Repo Information
         id("org.ajoberstar.grgit") version GRGIT
-
-        // Token Replacement
-        id("net.kyori.blossom") version BLOSSOM
 
         // Code Quality
         id("org.jlleitschuh.gradle.ktlint") version KTLINT
@@ -66,23 +61,23 @@ dependencies {
     }
 }
 
+configurations {
+    // Makes all the configurations use the same Kotlin version.
+    all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "org.jetbrains.kotlin") {
+                useVersion(Dependencies.KOTLIN)
+            }
+        }
+    }
+}
+
 // The latest commit ID
 val buildRevision: String = grgit.log()[0].id ?: "dev"
 
 // Disable unneeded rules
 ktlint {
     this.disabledRules.add("no-wildcard-imports")
-}
-
-blossom {
-    mapOf(
-        "project.name" to Coordinates.NAME,
-        "project.version" to Coordinates.VERSION,
-        "project.desc" to Coordinates.DESC,
-        "project.rev" to buildRevision,
-    ).mapKeys { "@${it.key}@" }.forEach { (key, value) ->
-        replaceToken(key, value)
-    }
 }
 
 tasks {
