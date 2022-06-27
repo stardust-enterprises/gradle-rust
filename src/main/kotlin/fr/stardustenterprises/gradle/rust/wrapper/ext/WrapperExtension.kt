@@ -34,7 +34,8 @@ abstract class WrapperExtension
 
     @Input
     val cargoInstallTargets: Property<Boolean> =
-        objects.property(Boolean::class.java).convention(false)
+        objects.property(Boolean::class.java)
+            .convention(false)
 
     // Global Properties
 
@@ -48,6 +49,10 @@ abstract class WrapperExtension
 
     @Input
     val release: Property<Boolean> = objects.property(Boolean::class.java)
+        .convention(false)
+
+    @Input
+    val showStderr: Property<Boolean> = objects.property(Boolean::class.java)
         .convention(false)
 
     @Input

@@ -129,6 +129,9 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                 it.workingDir(this.workingDir)
                 it.environment(targetOpt.env)
                 it.standardOutput = stdout
+                if (configuration.showStderr.getOrElse(false)) {
+                    it.errorOutput = stdout
+                }
             }.assertNormalExitValue()
         } catch (throwable: Throwable) {
             if (isOsxCross) {
@@ -224,7 +227,9 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
             .also(File::mkdirs)
             .resolve(targetOpt.outputName!!)
 
-        if (!newOut.exists()) newOut.createNewFile()
+        if (!newOut.exists()) {
+            newOut.createNewFile()
+        }
         output.copyTo(newOut, overwrite = true)
 
         return newOut
