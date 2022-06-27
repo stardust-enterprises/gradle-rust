@@ -1,4 +1,4 @@
-private const val kotlinVersion = "1.6.10"
+private const val kotlinVersion = "1.7.0"
 
 object Plugins {
     const val KOTLIN = kotlinVersion
