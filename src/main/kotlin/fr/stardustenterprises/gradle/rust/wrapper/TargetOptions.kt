@@ -73,8 +73,7 @@ data class TargetOptions(
                 ?: throw RuntimeException("Invalid base toolchain.")
         }
         if (this.release == null) {
-            this.release = configuration.release.orNull
-                ?: throw RuntimeException("Invalid base release.")
+            this.release = configuration.release.getOrElse(false)
         }
 
         if (this.args.isEmpty()) {

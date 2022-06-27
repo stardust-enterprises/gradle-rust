@@ -9,7 +9,7 @@ object TargetManager {
         project: Project,
         wrapperExtension: WrapperExtension,
     ) {
-        if (wrapperExtension.cargoInstallTargets.get()) {
+        if (wrapperExtension.cargoInstallTargets.getOrElse(false)) {
             installTargets(project, wrapperExtension)
         }
     }
