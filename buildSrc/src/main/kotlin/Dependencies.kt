@@ -4,9 +4,9 @@ object Plugins {
     const val KOTLIN = kotlinVersion
     const val GRGIT = "4.1.1" // old version for jgit to work on Java 8
     const val BLOSSOM = "1.3.0"
-    const val KTLINT = "10.2.1"
+    const val KTLINT = "10.3.0"
     const val DOKKA = kotlinVersion
-    const val GRADLE_PLUGIN_PUBLISH = "0.18.0"
+    const val GRADLE_PLUGIN_PUBLISH = "0.21.0"
 }
 
 object Dependencies {
