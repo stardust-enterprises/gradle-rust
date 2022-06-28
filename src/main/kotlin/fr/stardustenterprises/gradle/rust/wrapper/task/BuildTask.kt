@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import fr.stardustenterprises.gradle.rust.data.Exports
 import fr.stardustenterprises.gradle.rust.data.TargetExport
+import fr.stardustenterprises.gradle.rust.wrapper.BouncerOutputStream
 import fr.stardustenterprises.gradle.rust.wrapper.TargetManager
 import fr.stardustenterprises.gradle.rust.wrapper.TargetOptions
 import fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension
@@ -128,39 +129,40 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                 it.args(args)
                 it.workingDir(this.workingDir)
                 it.environment(targetOpt.env)
-                it.standardOutput = stdout
-                if (configuration.showStderr.getOrElse(false)) {
-                    it.errorOutput = stdout
-                }
+                it.standardOutput = BouncerOutputStream(System.out, stdout)
+                it.errorOutput = System.err
             }.assertNormalExitValue()
         } catch (throwable: Throwable) {
             if (isOsxCross) {
                 println(
-                    "Error cross-compiling to a darwin target (" +
+                    "[gradle-rust] Error cross-compiling to a darwin target (" +
                         targetOpt.target + ")."
                 )
                 println(
-                    "Ensure your .cargo/config.toml file is " +
+                    "[gradle-rust] Ensure your .cargo/config.toml file is " +
                         "configured properly with the osxcross toolchains."
                 )
             }
-
-            throw RuntimeException(
-                "An error occured while building using command:\n" +
-                    targetOpt.command + " " + args.joinToString(" "),
-                throwable
-            )
         }
 
         var output: File? = null
-
+        var error = false
         for (str in stdout.toString().trim().split("\n")) {
             try {
                 val jsonStr = str.trim()
 
                 val jsonObject = json.fromJson(jsonStr, JsonObject::class.java)
                 val reason = jsonObject.get("reason").asString
-                if (reason.equals("compiler-artifact", true)) {
+
+                if (reason.equals("build-finished")) {
+                    error = !jsonObject.get("success").asBoolean
+                }
+                if (reason.equals("compiler-message")) {
+                    val message = jsonObject.get("message").asJsonObject.get("rendered").asString
+                    println(message)
+                }
+
+                if (output == null && reason.equals("compiler-artifact")) {
                     var manifestPath = jsonObject.get("manifest_path").asString
 
                     if (manifestPath.startsWith("/project")) {
@@ -208,12 +210,18 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                                 }
                             }
                             output = file
-                            break
                         }
                     }
                 }
             } catch (_: Throwable) {
             }
+        }
+
+        if (error) {
+            throw RuntimeException(
+                "An error occured during the compilation process, see logs above. \nCommand: " +
+                    targetOpt.command + " " + args.joinToString(" ")
+            )
         }
 
         if (output == null) {
@@ -231,6 +239,9 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
             newOut.createNewFile()
         }
         output.copyTo(newOut, overwrite = true)
+
+        System.out.flush()
+        System.err.flush()
 
         return newOut
     }

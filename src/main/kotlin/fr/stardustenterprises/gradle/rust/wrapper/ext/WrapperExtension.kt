@@ -52,10 +52,6 @@ abstract class WrapperExtension
         .convention(false)
 
     @Input
-    val showStderr: Property<Boolean> = objects.property(Boolean::class.java)
-        .convention(false)
-
-    @Input
     val args: MutableList<String> =
         mutableListOf()
 
