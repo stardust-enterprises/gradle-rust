@@ -21,6 +21,7 @@ plugins {
         id("com.gradle.plugin-publish") version GRADLE_PLUGIN_PUBLISH
         `java-gradle-plugin`
         `maven-publish`
+        signing
     }
 }
 
@@ -270,6 +271,12 @@ publishing.publications {
                 developerConnection.set("scm:git:ssh://github.com/$repo.git")
                 url.set("https://github.com/$repo")
             }
+        }
+
+        // Configure the signing extension to sign this Maven artifact.
+        signing {
+            isRequired = project.properties["signing.keyId"] != null
+            sign(this@create)
         }
     }
 }
