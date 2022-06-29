@@ -164,7 +164,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                     println(message)
                 }
 
-                if (output == null && reason.equals("compiler-artifact")) {
+                if (reason.equals("compiler-artifact")) {
                     var manifestPath = Path(jsonObject.get("manifest_path").asString)
 
                     if (manifestPath.startsWith("/project")) {
@@ -174,30 +174,31 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                     }
 
                     if (manifestPath == Path(cargoToml.absolutePath)) {
-                        val array = jsonObject.getAsJsonArray(
+                        val elem = jsonObject.getAsJsonArray(
                             "filenames"
-                        )
+                        ).firstOrNull() { !it.isJsonNull }
+                            ?: throw RuntimeException(
+                                "Compiler did not give any valid output file"
+                            )
 
-                        for (elem in array) {
-                            var binPath = Path(elem.asString)
-                            if (binPath.startsWith("/project")) {
-                                val subPath = binPath.subpath(1, binPath.nameCount)
-                                val projectDir = Path(project.projectDir.absolutePath)
-                                binPath = projectDir.resolve(subPath).absolute()
-                            }
-
-                            var file = File(binPath.toString())
-                            if (!file.exists()) {
-                                file = File(project.projectDir, binPath.toString())
-                                if (!file.exists()) {
-                                    throw RuntimeException(
-                                        "Cannot find output file!"
-                                    )
-                                }
-                            }
-                            output = file
-                            break
+                        var binPath = Path(elem.asString)
+                        if (binPath.startsWith("/project")) {
+                            val subPath = binPath.subpath(1, binPath.nameCount)
+                            val projectDir = Path(project.projectDir.absolutePath)
+                            binPath = projectDir.resolve(subPath).absolute()
                         }
+
+                        var file = File(binPath.toString())
+                        if (!file.exists()) {
+                            file = File(project.projectDir, binPath.toString())
+                            if (!file.exists()) {
+                                throw RuntimeException(
+                                    "Cannot find output file!"
+                                )
+                            }
+                        }
+                        output = file
+                        break
                     }
                 }
             } catch (_: Throwable) {
@@ -217,6 +218,8 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                     targetOpt.command + " " + args.joinToString(" ")
             )
         }
+
+        println("Output: " + output.absolutePath)
 
         val newOut = tmpDir.resolve(targetOpt.target!!)
             .also(File::mkdirs)
