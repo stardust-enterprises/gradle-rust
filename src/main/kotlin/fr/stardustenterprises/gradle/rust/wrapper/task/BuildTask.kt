@@ -219,8 +219,6 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
             )
         }
 
-        println("Output: " + output.absolutePath)
-
         val newOut = tmpDir.resolve(targetOpt.target!!)
             .also(File::mkdirs)
             .resolve(targetOpt.outputName!!)
