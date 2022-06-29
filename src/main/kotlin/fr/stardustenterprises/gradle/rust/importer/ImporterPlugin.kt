@@ -3,6 +3,8 @@ package fr.stardustenterprises.gradle.rust.importer
 import fr.stardustenterprises.gradle.rust.importer.ProcessResourcesRust.process
 import fr.stardustenterprises.gradle.rust.importer.ext.ImporterExtension
 import fr.stardustenterprises.stargrad.StargradPlugin
+import org.gradle.api.Action
+import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.language.jvm.tasks.ProcessResources
 
@@ -30,9 +32,14 @@ class ImporterPlugin : StargradPlugin() {
                 it.configure { t ->
                     t.from(configuration)
                 }
-            }.get().doLast {
-                val baseDir = (it as ProcessResources).destinationDir
-                process(project, importerExtension, baseDir)
             }
+            .get()
+            // Use anonymous object instead of lambda to avoid message disabling execution optimizations
+            .doLast(object : Action<Task> {
+                override fun execute(t: Task) {
+                    val baseDir = (t as ProcessResources).destinationDir
+                    process(project, importerExtension, baseDir)
+                }
+            })
     }
 }
