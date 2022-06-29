@@ -23,6 +23,8 @@ import java.nio.file.Files
 import java.util.*
 import java.util.stream.Collectors
 import java.util.zip.ZipException
+import kotlin.io.path.Path
+import kotlin.io.path.absolute
 
 @Task(
     group = "rust", name = "build"
@@ -163,46 +165,30 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                 }
 
                 if (output == null && reason.equals("compiler-artifact")) {
-                    var manifestPath = jsonObject.get("manifest_path").asString
+                    var manifestPath = Path(jsonObject.get("manifest_path").asString)
 
                     if (manifestPath.startsWith("/project")) {
-                        manifestPath = manifestPath.replaceFirst(
-                            "/project",
-                            project.projectDir.absolutePath.let {
-                                if (it.endsWith(File.separatorChar))
-                                    it.substring(0, it.length - 1)
-                                else
-                                    it
-                            }
-                        )
+                        val subPath = manifestPath.subpath(1, manifestPath.nameCount)
+                        val projectDir = Path(project.projectDir.absolutePath)
+                        manifestPath = projectDir.resolve(subPath).absolute()
                     }
 
-                    if (manifestPath.equals(
-                            cargoToml.absolutePath,
-                            true
-                        )
-                    ) {
+                    if (manifestPath == Path(cargoToml.absolutePath)) {
                         val array = jsonObject.getAsJsonArray(
                             "filenames"
                         )
 
                         for (elem in array) {
-                            var binPath = elem.asString
+                            var binPath = Path(elem.asString)
                             if (binPath.startsWith("/project")) {
-                                binPath = binPath.replaceFirst(
-                                    "/project",
-                                    project.projectDir.absolutePath.let {
-                                        if (it.endsWith(File.separatorChar))
-                                            it.substring(0, it.length - 1)
-                                        else
-                                            it
-                                    }
-                                )
+                                val subPath = binPath.subpath(1, binPath.nameCount)
+                                val projectDir = Path(project.projectDir.absolutePath)
+                                binPath = projectDir.resolve(subPath).absolute()
                             }
 
-                            var file = File(binPath)
+                            var file = File(binPath.toString())
                             if (!file.exists()) {
-                                file = File(project.projectDir, binPath)
+                                file = File(project.projectDir, binPath.toString())
                                 if (!file.exists()) {
                                     throw RuntimeException(
                                         "Cannot find output file!"
