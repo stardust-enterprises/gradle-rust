@@ -210,6 +210,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                                 }
                             }
                             output = file
+                            break
                         }
                     }
                 }
