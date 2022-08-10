@@ -1,0 +1,97 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:fr.stardustenterprises.gradle.rust.data////PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.data/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.data/Exports///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.data/-exports/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.data/Exports/Exports/#kotlin.Int#kotlin.collections.List[fr.stardustenterprises.gradle.rust.data.TargetExport]/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.data/-exports/-exports.html
+$dokka.location:fr.stardustenterprises.gradle.rust.data/Exports/exportsVersion/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.data/-exports/exports-version.html
+$dokka.location:fr.stardustenterprises.gradle.rust.data/Exports/targets/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.data/-exports/targets.html
+$dokka.location:fr.stardustenterprises.gradle.rust.data/TargetExport///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.data/-target-export/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.data/TargetExport/TargetExport/#kotlin.String#kotlin.String#kotlin.String#kotlin.String/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.data/-target-export/-target-export.html
+$dokka.location:fr.stardustenterprises.gradle.rust.data/TargetExport/binaryFile/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.data/-target-export/binary-file.html
+$dokka.location:fr.stardustenterprises.gradle.rust.data/TargetExport/targetArchitecture/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.data/-target-export/target-architecture.html
+$dokka.location:fr.stardustenterprises.gradle.rust.data/TargetExport/targetOperatingSystem/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.data/-target-export/target-operating-system.html
+$dokka.location:fr.stardustenterprises.gradle.rust.data/TargetExport/targetTriple/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.data/-target-export/target-triple.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer.ext////PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer.ext/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer.ext/ImporterExtension///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer.ext/-importer-extension/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer.ext/ImporterExtension/ImporterExtension/#org.gradle.api.Project/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer.ext/-importer-extension/-importer-extension.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer.ext/ImporterExtension/baseDir/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer.ext/-importer-extension/base-dir.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer.ext/ImporterExtension/layout/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer.ext/-importer-extension/layout.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer////PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer//LAYOUT_REGISTRY/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/-l-a-y-o-u-t_-r-e-g-i-s-t-r-y.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer/FlatLayout///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/-flat-layout/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer/FlatLayout/FlatLayout/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/-flat-layout/-flat-layout.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer/FlatLayout/getPathForTarget/#kotlin.String#kotlin.String#kotlin.String#kotlin.String/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/-flat-layout/get-path-for-target.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer/HierarchicalLayout///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/-hierarchical-layout/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer/HierarchicalLayout/HierarchicalLayout/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/-hierarchical-layout/-hierarchical-layout.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer/HierarchicalLayout/getPathForTarget/#kotlin.String#kotlin.String#kotlin.String#kotlin.String/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/-hierarchical-layout/get-path-for-target.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer/ILayout///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/-i-layout/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer/ILayout/getPathForTarget/#kotlin.String#kotlin.String#kotlin.String#kotlin.String/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/-i-layout/get-path-for-target.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer/ImporterPlugin///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/-importer-plugin/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer/ImporterPlugin/ImporterPlugin/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/-importer-plugin/-importer-plugin.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer/ImporterPlugin/id/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/-importer-plugin/id.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer/ProcessResourcesRust///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/-process-resources-rust/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer/ProcessResourcesRust/outputPaths/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/-process-resources-rust/output-paths.html
+$dokka.location:fr.stardustenterprises.gradle.rust.importer/ProcessResourcesRust/process/#org.gradle.api.Project#fr.stardustenterprises.gradle.rust.importer.ext.ImporterExtension#java.io.File/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.importer/-process-resources-rust/process.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.ext////PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.ext/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.ext/WrapperExtension///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.ext/-wrapper-extension/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.ext/WrapperExtension/WrapperExtension/#org.gradle.api.Project/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.ext/-wrapper-extension/-wrapper-extension.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.ext/WrapperExtension/args/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.ext/-wrapper-extension/args.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.ext/WrapperExtension/cargoInstallTargets/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.ext/-wrapper-extension/cargo-install-targets.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.ext/WrapperExtension/command/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.ext/-wrapper-extension/command.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.ext/WrapperExtension/crate/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.ext/-wrapper-extension/crate.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.ext/WrapperExtension/defaultTarget/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.ext/-wrapper-extension/default-target.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.ext/WrapperExtension/env/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.ext/-wrapper-extension/env.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.ext/WrapperExtension/release/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.ext/-wrapper-extension/release.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.ext/WrapperExtension/rustupCommand/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.ext/-wrapper-extension/rustup-command.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.ext/WrapperExtension/target/#kotlin.String#kotlin.String/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.ext/-wrapper-extension/target.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.ext/WrapperExtension/targets/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.ext/-wrapper-extension/targets.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.ext/WrapperExtension/toolchain/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.ext/-wrapper-extension/toolchain.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task////PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/BuildTask.Companion///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-build-task/-companion/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/BuildTask///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-build-task/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/BuildTask/BuildTask/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-build-task/-build-task.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/BuildTask/exportsZip/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-build-task/exports-zip.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/BuildTask/inputFiles/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-build-task/input-files.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/BuildTask/run/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-build-task/run.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/BuildTask/targetsHash/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-build-task/targets-hash.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/CleanTask///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-clean-task/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/CleanTask/CleanTask/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-clean-task/-clean-task.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/CleanTask/run/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-clean-task/run.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/RunTask///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-run-task/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/RunTask/RunTask/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-run-task/-run-task.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/TestTask///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-test-task/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/TestTask/TestTask/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-test-task/-test-task.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/WrappedTask///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-wrapped-task/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/WrappedTask/WrappedTask/#kotlin.String/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-wrapped-task/-wrapped-task.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper.task/WrappedTask/run/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper.task/-wrapped-task/run.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper////PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/BouncerOutputStream///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-bouncer-output-stream/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/BouncerOutputStream/BouncerOutputStream/#java.io.OutputStream#java.io.OutputStream/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-bouncer-output-stream/-bouncer-output-stream.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/BouncerOutputStream/write/#kotlin.Int/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-bouncer-output-stream/write.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/TargetManager///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-target-manager/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/TargetManager/ensureTargetsInstalled/#org.gradle.api.Project#fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-target-manager/ensure-targets-installed.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/TargetOptions///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-target-options/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/TargetOptions/TargetOptions/#kotlin.String#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.Boolean?#kotlin.String?#kotlin.collections.MutableList[kotlin.String]#kotlin.collections.MutableMap[kotlin.String,kotlin.String]/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-target-options/-target-options.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/TargetOptions/TargetOptions/#kotlin.String/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-target-options/-target-options.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/TargetOptions/args/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-target-options/args.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/TargetOptions/command/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-target-options/command.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/TargetOptions/env/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-target-options/env.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/TargetOptions/getName/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-target-options/get-name.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/TargetOptions/outputName/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-target-options/output-name.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/TargetOptions/populateFrom/#fr.stardustenterprises.gradle.rust.wrapper.ext.WrapperExtension/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-target-options/populate-from.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/TargetOptions/release/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-target-options/release.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/TargetOptions/subcommand/#kotlin.Array[kotlin.String]/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-target-options/subcommand.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/TargetOptions/target/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-target-options/target.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/TargetOptions/toolchain/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-target-options/toolchain.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/WrapperPlugin.Companion///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-wrapper-plugin/-companion/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/WrapperPlugin.Companion/targetContainer/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-wrapper-plugin/-companion/target-container.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/WrapperPlugin///PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-wrapper-plugin/index.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/WrapperPlugin/WrapperPlugin/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-wrapper-plugin/-wrapper-plugin.html
+$dokka.location:fr.stardustenterprises.gradle.rust.wrapper/WrapperPlugin/id/#/PointingToDeclaration/-gradle -rust/fr.stardustenterprises.gradle.rust.wrapper/-wrapper-plugin/id.html
+fr.stardustenterprises.gradle.rust.data
+fr.stardustenterprises.gradle.rust.importer
+fr.stardustenterprises.gradle.rust.importer.ext
+fr.stardustenterprises.gradle.rust.wrapper
+fr.stardustenterprises.gradle.rust.wrapper.ext
+fr.stardustenterprises.gradle.rust.wrapper.task
+
