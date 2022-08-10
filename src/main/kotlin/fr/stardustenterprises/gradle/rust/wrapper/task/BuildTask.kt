@@ -34,11 +34,12 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         private val FORBIDDEN_SUFFIXES =
             arrayOf(
                 ".o",
+                ".rlib",
 
                 // MSVC
                 ".lib",
                 ".pdb",
-                ".d"
+                ".d",
             )
 
         private const val EXPORTS_FILE_NAME =
@@ -113,8 +114,9 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                     )
             )
 
-            exportMap[targetOptions.target!!] =
-                build(targetOptions, tmpDir, cargoTomlFile)
+            build(targetOptions, tmpDir, cargoTomlFile)?.let {
+                exportMap[targetOptions.target!!] = it
+            }
         }
 
         writeExports(exportMap)
@@ -125,7 +127,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
         targetOpt: TargetOptions,
         tmpDir: File,
         cargoToml: File,
-    ): File {
+    ): File? {
         val args = targetOpt.subcommand(
             "build", "--message-format=json"
         )
@@ -163,6 +165,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
 
         var output: File? = null
         var error = false
+        var dylib = false
         for (str in stdout.toString().trim().split("\n")) {
             try {
                 val jsonStr = str.trim()
@@ -174,23 +177,32 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                     error = !jsonObject.get("success").asBoolean
                 }
                 if (reason.equals("compiler-message")) {
-                    val message = jsonObject.get("message").asJsonObject.get("rendered").asString
-                    println(message)
+                    val message = jsonObject.get("message")?.asJsonObject?.get("rendered")?.asString
+                    message?.let {
+                        println(it)
+                    }
                 }
 
                 if (reason.equals("compiler-artifact")) {
-                    var manifestPath = Path(jsonObject.get("manifest_path").asString)
+                    var manifestPath = jsonObject.get("manifest_path")?.asString?.let { Path(it) }
 
-                    if (manifestPath.startsWith("/project")) {
+                    if (manifestPath?.startsWith("/project") == true) {
                         val subPath = manifestPath.subpath(1, manifestPath.nameCount)
                         val projectDir = Path(project.projectDir.absolutePath)
                         manifestPath = projectDir.resolve(subPath).absolute()
                     }
 
+                    val targetObj = jsonObject.get("target")?.asJsonObject
+                    val kind = targetObj?.get("kind")?.asJsonArray
+                    if (kind?.none { it.asString.lowercase().endsWith("dylib") } == true)
+                        continue
+                    if (kind?.any { it.asString.lowercase() == "custom-build" } == true)
+                        continue
                     if (manifestPath == Path(cargoToml.absolutePath)) {
                         val array = jsonObject.getAsJsonArray(
                             "filenames"
                         )
+                        dylib = true
 
                         for (elem in array) {
                             var binPath = Path(elem.asString)
@@ -209,7 +221,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                                     )
                                 }
                             }
-                            if (!FORBIDDEN_SUFFIXES.any { file.endsWith(it) }) {
+                            if (FORBIDDEN_SUFFIXES.none { file.name.endsWith(it) }) {
                                 output = file
                                 break
                             }
@@ -225,6 +237,11 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                 "An error occured during the compilation process, see logs above. \nCommand: " +
                     targetOpt.command + " " + args.joinToString(" ")
             )
+        }
+
+        if (!dylib) {
+            logger.trace("Not a (c)dylib, skipping...")
+            return null
         }
 
         if (output == null) {
