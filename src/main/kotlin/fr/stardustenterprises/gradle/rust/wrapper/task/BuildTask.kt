@@ -31,6 +31,16 @@ import kotlin.io.path.absolute
 )
 open class BuildTask : ConfigurableTask<WrapperExtension>() {
     companion object {
+        private val FORBIDDEN_SUFFIXES =
+            arrayOf(
+                ".o",
+
+                // MSVC
+                ".lib",
+                ".pdb",
+                ".d"
+            )
+
         private const val EXPORTS_FILE_NAME =
             "_fr_stardustenterprises_gradle_rust_exports.zip"
 
@@ -95,8 +105,12 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
 
         this.configuration.targets.forEach { targetOptions ->
             println(
-                "Building \"%s\" for target \"%s\""
-                    .format(targetOptions.name, targetOptions.target)
+                "Building \"%s\" with \"%s\" for target \"%s\""
+                    .format(
+                        targetOptions.name,
+                        targetOptions.command,
+                        targetOptions.target
+                    )
             )
 
             exportMap[targetOptions.target!!] =
@@ -195,8 +209,10 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                                     )
                                 }
                             }
-                            output = file
-                            break
+                            if (!FORBIDDEN_SUFFIXES.any { file.endsWith(it) }) {
+                                output = file
+                                break
+                            }
                         }
                     }
                 }
