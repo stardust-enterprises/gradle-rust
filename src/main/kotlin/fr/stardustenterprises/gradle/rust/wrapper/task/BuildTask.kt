@@ -178,7 +178,7 @@ open class BuildTask : ConfigurableTask<WrapperExtension>() {
                     println(message)
                 }
 
-                if (output == null && reason.equals("compiler-artifact")) {
+                if (reason.equals("compiler-artifact")) {
                     var manifestPath = Path(jsonObject.get("manifest_path").asString)
 
                     if (manifestPath.startsWith("/project")) {
