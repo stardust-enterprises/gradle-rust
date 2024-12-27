@@ -9,11 +9,7 @@ plugins {
 
 apply<PoorMansKotlinDslPlugin>()
 
-val include by configurations.registering {
-    val implementation by configurations
-
-    implementation.extendsFrom(this)
-}
+val include by configurations.registering
 
 java {
     withSourcesJar()
@@ -26,6 +22,7 @@ java {
 
 tasks {
     jar {
+        dependsOn(include)
         from(include.map { it.map { file -> if (file.isDirectory) zipTree(file) else file }})
     }
 }
