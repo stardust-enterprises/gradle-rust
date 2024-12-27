@@ -11,20 +11,17 @@ permissions:
 jobs:
   dependency-submission:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java: [ 21 ]
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
         with:
           submodules: true
 
-      - name: Setup Java ${{ matrix.java }}
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: ${{ matrix.java }}
+          distribution: "temurin"
+          java-version: "21"
 
       - name: Generate and submit Dependency Graph
         uses: gradle/actions/dependency-submission@v4
