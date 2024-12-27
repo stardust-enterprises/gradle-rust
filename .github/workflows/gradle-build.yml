@@ -4,7 +4,6 @@ on:
   push:
     branches-ignore:
       - docs
-  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -29,7 +28,7 @@ jobs:
         run: ./gradlew build
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: |
