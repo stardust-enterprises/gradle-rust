@@ -1,0 +1,29 @@
+name: Gradle Dependency Submission
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ 'v4' ]
+
+permissions:
+  contents: write
+
+jobs:
+  dependency-submission:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 21 ]
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup Java ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java }}
+
+      - name: Generate and submit Dependency Graph
+        uses: gradle/actions/dependency-submission@v4

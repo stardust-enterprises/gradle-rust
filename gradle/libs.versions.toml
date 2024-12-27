@@ -1,0 +1,13 @@
+[versions]
+gradle-plugin-publish = "1.3.0"
+kotlin = "2.1.0"
+reproducible-builds = "1.0"
+
+[libraries]
+gradle-plugin-publish = { module = "com.gradle.plugin-publish:com.gradle.plugin-publish.gradle.plugin", version.ref = "gradle-plugin-publish" }
+reproducible-builds = { module = "org.gradlex.reproducible-builds:org.gradlex.reproducible-builds.gradle.plugin", version.ref = "reproducible-builds" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-sam-with-receiver = { id = "org.jetbrains.kotlin.plugin.sam.with.receiver", version.ref = "kotlin" }
+kotlin-assignment = { id = "org.jetbrains.kotlin.plugin.assignment", version.ref = "kotlin" }

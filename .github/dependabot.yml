@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: "gradle"
+    directories:
+      - "/build-logic"
+      - "/gradle-plugin"
+      - "/stardust-gradle-commons"
+    schedule:
+      interval: "weekly"
+# Will probably need this once I get integration tests going
+#  - package-ecosystem: "cargo"
+#    directory: "/"
+#    schedule:
+#      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
