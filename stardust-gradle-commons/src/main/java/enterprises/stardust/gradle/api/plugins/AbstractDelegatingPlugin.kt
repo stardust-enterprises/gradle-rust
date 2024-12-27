@@ -1,4 +1,4 @@
-package enterprises.stardust.gradle.common
+package enterprises.stardust.gradle.api.plugins
 
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin

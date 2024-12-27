@@ -4,7 +4,8 @@
 
 ## Notice
 
-This project is currently being rewritten and is not ready for use. You can check out the [v3.x branch](https://github.com/stardust-enterprises/gradle-rust/tree/v3.x).
+> [!WARNING]
+> This project is currently being rewritten and is not ready for use. You can check out the [v3.x branch](https://github.com/stardust-enterprises/gradle-rust/tree/v3).
 
 ## License
 
